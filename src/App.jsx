@@ -4,6 +4,7 @@ import { NotificationProvider } from './context/NotificationContext';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 import HomePage from './pages/public/HomePage';
 import FindDonorsPage from './pages/public/FindDonorsPage';
@@ -79,6 +80,7 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+        <ScrollToTop />
         <NotificationProvider>
         <Routes>
           {/* Public */}
