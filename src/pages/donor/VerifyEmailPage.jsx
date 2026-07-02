@@ -91,7 +91,11 @@ export default function VerifyEmailPage() {
   useEffect(() => {
     if (status !== 'verified') return;
     if (countdown === 0) {
-      navigate(user ? '/donor/profile/edit' : '/donor/login');
+      if (user) {
+        navigate('/donor/profile/edit', { state: { newUser: true, message: 'Please complete your profile to continue.' } });
+      } else {
+        navigate('/donor/login');
+      }
       return;
     }
     const t = setTimeout(() => setCountdown(c => c - 1), 1000);
@@ -136,6 +140,7 @@ export default function VerifyEmailPage() {
         </p>
         <Link
           to={dest}
+          state={user ? { newUser: true, message: 'Please complete your profile to continue.' } : undefined}
           className="inline-block w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3.5 rounded-xl transition-colors text-sm"
         >
           {destLabel}

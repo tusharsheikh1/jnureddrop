@@ -43,8 +43,15 @@ export default function DonorLoginPage() {
     setEmailUnverified(false);
     setLoading(true);
     try {
-      await donorLogin(form.email, form.password);
-      navigate('/donor/dashboard');
+      const data = await donorLogin(form.email, form.password);
+      const donor = data?.donor;
+      const profileIncomplete = donor && (!donor.age || !donor.gender || !donor.height_cm || !donor.weight_kg || !donor.blood_type || !donor.district);
+      
+      if (profileIncomplete) {
+        navigate('/donor/profile/edit', { state: { newUser: true, message: 'Please complete your profile to continue.' } });
+      } else {
+        navigate('/donor/dashboard');
+      }
     } catch (err) {
       const status = err.response?.status;
       const data = err.response?.data;
