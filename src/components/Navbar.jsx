@@ -376,7 +376,11 @@ export default function Navbar() {
       </div>
 
       {/* ── MOBILE BOTTOM NAV ── */}
-      <MobileBottomNav />
+      {![
+        '/donor/profile/edit',
+        '/donor/login',
+        '/donor/register'
+      ].includes(location.pathname) && <MobileBottomNav />}
     </>
   );
 }

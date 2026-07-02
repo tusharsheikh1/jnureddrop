@@ -251,7 +251,7 @@ export default function DonorEditProfilePage() {
         </div>
       )}
 
-      {locationState.state?.message && !success && (
+      {locationState.state?.message && !isNewUser && !success && (
         <div className="bg-blue-50 text-blue-700 p-4 mx-4 mt-4 rounded-xl shadow-sm border border-blue-100 font-medium text-center">
           {locationState.state.message}
         </div>
@@ -477,7 +477,7 @@ export default function DonorEditProfilePage() {
         </div>
 
         {/* ── SAVE BUTTON ── */}
-        <div className="fixed bottom-16 left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t border-gray-100 z-40 md:static md:bottom-auto md:left-auto md:right-auto md:border-0 md:bg-transparent md:backdrop-blur-none md:p-0 md:mt-4">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-md border-t border-gray-100 z-40 md:static md:bottom-auto md:left-auto md:right-auto md:border-0 md:bg-transparent md:backdrop-blur-none md:p-0 md:mt-4">
           <div className="max-w-2xl mx-auto">
             <button
               type="submit"
