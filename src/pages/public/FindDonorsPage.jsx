@@ -343,7 +343,7 @@ function DonorCard({ donor }) {
             </span>
           </div>
           <p className="text-sm text-gray-500 mt-0.5">
-            {donor.division || 'Registered Donor'}
+            Registered Donor
           </p>
           {location && (
             <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">

@@ -20,7 +20,7 @@ async function downloadCSV(params) {
 
 const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
-const EMPTY_FILTERS = { blood_type: '', available: '', division: '', district: '', upazila: '', page: 1 };
+const EMPTY_FILTERS = { blood_type: '', available: '', district: '', upazila: '', page: 1 };
 
 function SortIcon({ active, dir }) {
   if (!active) {
@@ -82,10 +82,9 @@ export default function AdminDonorsPage() {
   const [sort, setSort]           = useState({ by: 'created_at', dir: 'desc' });
 
   // Location lists (cascading)
-  const [divisions, setDivisions]   = useState([]);
   const [districts, setDistricts]   = useState([]);
   const [upazilas, setUpazilas]     = useState([]);
-  const [locLoading, setLocLoading] = useState({ district: false, upazila: false });
+  const [locLoading, setLocLoading] = useState({ upazila: false });
 
   const [deletingId, setDeletingId] = useState(null);
   const [exporting, setExporting]   = useState(false);
@@ -103,33 +102,16 @@ export default function AdminDonorsPage() {
       .then(r => {
         setDonors(r.data.donors.data);
         setMeta(r.data.donors);
-        if (r.data.divisions?.length && divisions.length === 0) {
-          setDivisions(r.data.divisions);
-        }
       })
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { load(); }, []);
-
-  // When division changes: load districts, clear district+upazila
-  const handleDivisionChange = async (division) => {
-    const f = { ...filters, division, district: '', upazila: '', page: 1 };
-    setFilters(f);
-    setDistricts([]);
-    setUpazilas([]);
-
-    if (division) {
-      setLocLoading(l => ({ ...l, district: true }));
-      try {
-        const r = await api.get(`/locations/districts/${encodeURIComponent(division)}`);
-        setDistricts(Array.isArray(r.data) ? r.data : []);
-      } finally {
-        setLocLoading(l => ({ ...l, district: false }));
-      }
-    }
-    load(f, search, sort);
-  };
+  useEffect(() => {
+    load();
+    api.get('/locations/districts')
+      .then(r => setDistricts(Array.isArray(r.data) ? r.data : []))
+      .catch(() => {});
+  }, []);
 
   // When district changes: load upazilas, clear upazila
   const handleDistrictChange = async (district) => {
@@ -177,7 +159,6 @@ export default function AdminDonorsPage() {
   const clearFilters = () => {
     setSearch('');
     setFilters(EMPTY_FILTERS);
-    setDistricts([]);
     setUpazilas([]);
     const srt = { by: 'created_at', dir: 'desc' };
     setSort(srt);
@@ -193,9 +174,9 @@ export default function AdminDonorsPage() {
     }
   };
 
-  const hasLocationFilter = filters.division || filters.district || filters.upazila;
+  const hasLocationFilter = filters.district || filters.upazila;
   const hasAnyFilter      = search || filters.blood_type || filters.available || hasLocationFilter;
-  const activeFilterCount = [search, filters.blood_type, filters.available, filters.division, filters.district, filters.upazila]
+  const activeFilterCount = [search, filters.blood_type, filters.available, filters.district, filters.upazila]
     .filter(Boolean).length;
 
   return (
@@ -298,26 +279,13 @@ export default function AdminDonorsPage() {
             </svg>
             Filter by Location
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <SelectFilter
-              label="Division"
-              value={filters.division}
-              onChange={handleDivisionChange}
-              options={divisions}
-              placeholder="All Divisions"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <SelectFilter
               label="District"
               value={filters.district}
               onChange={handleDistrictChange}
               options={districts}
-              disabled={!filters.division || locLoading.district}
-              placeholder={
-                !filters.division    ? 'Select division first'
-                : locLoading.district ? 'Loading...'
-                : districts.length === 0 ? 'No districts'
-                : 'All Districts'
-              }
+              placeholder={districts.length === 0 ? 'Loading...' : 'All Districts'}
             />
             <SelectFilter
               label="Upazila"
@@ -340,7 +308,7 @@ export default function AdminDonorsPage() {
               <svg className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               </svg>
-              {[filters.division, filters.district, filters.upazila].filter(Boolean).map((loc, i, arr) => (
+              {[filters.district, filters.upazila].filter(Boolean).map((loc, i, arr) => (
                 <span key={loc} className="flex items-center gap-1">
                   <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full">{loc}</span>
                   {i < arr.length - 1 && <svg className="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>}
@@ -388,7 +356,6 @@ export default function AdminDonorsPage() {
                   <SortableHeader label="Donor"    field="name"         sort={sort} onSort={handleSort} className="px-5" />
                   <SortableHeader label="Blood"    field="blood_type"   sort={sort} onSort={handleSort} />
                   <th className="px-4 py-3.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide hidden sm:table-cell">Phone</th>
-                  <SortableHeader label="Division" field="division"     sort={sort} onSort={handleSort} className="hidden lg:table-cell" />
                   <SortableHeader label="District" field="district"     sort={sort} onSort={handleSort} className="hidden md:table-cell" />
                   <SortableHeader label="Upazila"  field="upazila"      sort={sort} onSort={handleSort} className="hidden xl:table-cell" />
                   <SortableHeader label="Status"   field="is_available" sort={sort} onSort={handleSort} />
@@ -417,11 +384,6 @@ export default function AdminDonorsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3.5 text-gray-500 hidden sm:table-cell">{d.phone ?? '—'}</td>
-                    <td className="px-4 py-3.5 hidden lg:table-cell">
-                      {d.division
-                        ? <span className="text-xs font-medium text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full">{d.division}</span>
-                        : <span className="text-gray-400">—</span>}
-                    </td>
                     <td className="px-4 py-3.5 text-gray-600 hidden md:table-cell">{d.district ?? '—'}</td>
                     <td className="px-4 py-3.5 text-gray-500 hidden xl:table-cell">{d.upazila ?? '—'}</td>
                     <td className="px-4 py-3.5">
