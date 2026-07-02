@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 function CheckIcon() {
@@ -84,7 +84,19 @@ function ResendForm({ initialEmail, onSuccess }) {
 export default function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const status = searchParams.get('status');
+  const [countdown, setCountdown] = useState(3);
+
+  useEffect(() => {
+    if (status !== 'verified') return;
+    if (countdown === 0) {
+      navigate(user ? '/donor/profile/edit' : '/donor/login');
+      return;
+    }
+    const t = setTimeout(() => setCountdown(c => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [status, countdown, user, navigate]);
 
   const Logo = () => (
     <div className="flex items-center gap-3 mb-8">
@@ -110,18 +122,23 @@ export default function VerifyEmailPage() {
   );
 
   if (status === 'verified') {
+    const dest = user ? '/donor/profile/edit' : '/donor/login';
+    const destLabel = user ? 'Complete Your Profile' : 'Go to Login';
     return (
       <Wrapper>
         <div className="flex justify-center mb-4"><CheckIcon /></div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Email Verified!</h1>
-        <p className="text-gray-500 text-sm mb-6">
-          Your email address has been successfully verified. You can now log in and start using JnU RedDrop.
+        <p className="text-gray-500 text-sm mb-2">
+          Your email address has been successfully verified.
+        </p>
+        <p className="text-gray-400 text-xs mb-6">
+          Redirecting you in <span className="font-bold text-red-600">{countdown}</span>s…
         </p>
         <Link
-          to="/donor/login"
+          to={dest}
           className="inline-block w-full bg-red-700 hover:bg-red-800 text-white font-bold py-3.5 rounded-xl transition-colors text-sm"
         >
-          Go to Login
+          {destLabel}
         </Link>
       </Wrapper>
     );

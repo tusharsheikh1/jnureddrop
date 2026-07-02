@@ -45,11 +45,21 @@ export default function DonorLoginPage() {
       await donorLogin(form.email, form.password);
       navigate('/donor/dashboard');
     } catch (err) {
+      const status = err.response?.status;
       const data = err.response?.data;
+
       if (data?.email_unverified) {
         setEmailUnverified(true);
       } else if (data?.errors) {
         setErrors(data.errors);
+      } else if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+        setErrors({ email: ['Server is taking too long. Please try again.'] });
+      } else if (status === 429) {
+        setErrors({ email: ['Too many attempts. Please wait a minute and try again.'] });
+      } else if (status === 500) {
+        setErrors({ email: ['Server error. Please try again in a moment.'] });
+      } else if (!err.response) {
+        setErrors({ email: ['Network error. Check your connection and try again.'] });
       } else {
         setErrors({ email: [data?.message ?? 'Login failed.'] });
       }
