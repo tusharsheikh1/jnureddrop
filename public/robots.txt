@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /donor/dashboard
+Disallow: /donor/profile
+Disallow: /donor/history
+Disallow: /donor/my-requests
+Disallow: /donor/blood-request/
+Disallow: /donor/getting-started
+Disallow: /notifications
+
+Sitemap: https://reddrop.jnu.ac.bd/sitemap.xml

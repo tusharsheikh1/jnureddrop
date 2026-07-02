@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-800 font-sans;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+  }
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+  .input-field {
+    @apply w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent;
+  }
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+  }
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .bangla {
+    font-family: 'Hind Siliguri', sans-serif;
+  }
+  .blog-body { @apply text-gray-700 leading-relaxed; }
+  .blog-body h1 { @apply text-2xl font-extrabold text-gray-900 mt-8 mb-4; }
+  .blog-body h2 { @apply text-xl font-bold text-gray-900 mt-7 mb-3; }
+  .blog-body h3 { @apply text-lg font-bold text-gray-800 mt-5 mb-2; }
+  .blog-body h4 { @apply text-base font-bold text-gray-800 mt-4 mb-2; }
+  .blog-body p  { @apply mb-4 leading-7; }
+  .blog-body ul { @apply list-disc list-outside ml-5 mb-4 space-y-1; }
+  .blog-body ol { @apply list-decimal list-outside ml-5 mb-4 space-y-1; }
+  .blog-body li { @apply leading-relaxed; }
+  .blog-body a  { @apply text-red-600 hover:text-red-700 underline underline-offset-2; }
+  .blog-body strong { @apply font-bold text-gray-900; }
+  .blog-body em  { @apply italic; }
+  .blog-body blockquote { @apply border-l-4 border-red-200 pl-5 italic text-gray-600 my-6 bg-red-50/40 py-3 rounded-r-xl; }
+  .blog-body img { @apply rounded-2xl max-w-full my-6 shadow-sm; }
+  .blog-body pre { @apply bg-gray-900 text-gray-100 rounded-xl p-5 overflow-x-auto my-6 text-sm; }
+  .blog-body code { @apply bg-red-50 text-red-700 px-1.5 py-0.5 rounded text-sm font-mono; }
+  .blog-body pre code { @apply bg-transparent text-gray-100 p-0; }
+  .blog-body table { @apply w-full border-collapse mb-6 text-sm; }
+  .blog-body th { @apply text-left bg-gray-100 px-4 py-2.5 font-semibold text-gray-700 border border-gray-200; }
+  .blog-body td { @apply px-4 py-2.5 border border-gray-200; }
+  .blog-body hr { @apply border-gray-200 my-8; }
+}
+
+/* Tiptap editor placeholder */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}
