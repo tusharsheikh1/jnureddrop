@@ -9,6 +9,15 @@ export default {
           700: '#b91c1c',
         },
       },
+      keyframes: {
+        'fade-slide-in': {
+          from: { opacity: '0', transform: 'translateY(8px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'fade-slide-in': 'fade-slide-in 0.25s ease-out both',
+      },
     },
   },
   plugins: [require('@tailwindcss/typography')],
