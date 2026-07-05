@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import HomePageDesktop from './HomePageDesktop';
 import HomePageMobile from './HomePageMobile';
+import AppInstallBanner from '../../components/AppInstallBanner';
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 768);
@@ -35,7 +36,12 @@ export default function HomePage() {
     activeRequests:    stats.active_requests    ?? 0,
   };
 
-  return isDesktop
-    ? <HomePageDesktop {...props} />
-    : <HomePageMobile {...props} />;
+  return (
+    <>
+      <AppInstallBanner />
+      {isDesktop
+        ? <HomePageDesktop {...props} />
+        : <HomePageMobile {...props} />}
+    </>
+  );
 }
