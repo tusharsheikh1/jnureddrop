@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axios';
 import ModernHeader from '../../components/ModernHeader';
 import Loader from '../../components/Loader';
+import SearchableSelect from '../../components/SearchableSelect';
 
 const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
 
@@ -413,21 +414,24 @@ export default function DonorEditProfilePage() {
             
             <div className="space-y-1">
               <FormRow icon={<IconLocation />} label="District" error={errors.district}>
-                <select className="w-full text-sm text-gray-800 bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-red-100 focus:border-red-400 outline-none transition-all appearance-none bg-no-repeat disabled:bg-gray-50 disabled:opacity-70" 
-                  style={{ backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundSize: '1em' }}
-                  value={form.district ?? ''} onChange={e => onDistrictChange(e.target.value)}>
-                  <option value="">Select District</option>
-                  {districts.map(d => <option key={d} value={d}>{d}</option>)}
-                </select>
+                <SearchableSelect
+                  value={form.district ?? ''}
+                  onChange={onDistrictChange}
+                  options={districts}
+                  placeholder="Select District"
+                  searchPlaceholder="Search district..."
+                />
               </FormRow>
 
               <FormRow icon={<IconLocation />} label="Upazila" error={errors.upazila}>
-                <select className="w-full text-sm text-gray-800 bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-red-100 focus:border-red-400 outline-none transition-all appearance-none bg-no-repeat disabled:bg-gray-50 disabled:opacity-70" 
-                  style={{ backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`, backgroundPosition: 'right 1rem center', backgroundSize: '1em' }}
-                  value={form.upazila ?? ''} onChange={e => setForm(f => ({ ...f, upazila: e.target.value }))} disabled={!form.district}>
-                  <option value="">Select Upazila</option>
-                  {upazilas.map(u => <option key={u} value={u}>{u}</option>)}
-                </select>
+                <SearchableSelect
+                  value={form.upazila ?? ''}
+                  onChange={val => setForm(f => ({ ...f, upazila: val }))}
+                  options={upazilas}
+                  placeholder="Select Upazila"
+                  searchPlaceholder="Search upazila..."
+                  disabled={!form.district}
+                />
               </FormRow>
             </div>
           </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useGoogleLogin } from '@react-oauth/google';
+import useGoogleAuth from '../../hooks/useGoogleAuth';
 
 export default function DonorRegisterPage() {
   const { donorRegister, donorGoogleLogin } = useAuth();
@@ -14,13 +14,15 @@ export default function DonorRegisterPage() {
   const [showConfirm, setShowConfirm]   = useState(false);
   const [showEmailForm, setShowEmailForm] = useState(false);
 
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
+  const handleGoogleLogin = useGoogleAuth({
+    onSuccess: async (tokens) => {
       setErrors({});
       setLoading(true);
       try {
-        const data = await donorGoogleLogin(tokenResponse.access_token);
-        if (data.is_new_user) {
+        const data = await donorGoogleLogin(tokens);
+        const donor = data?.donor;
+        const profileIncomplete = donor && (!donor.age || !donor.gender || !donor.height_cm || !donor.weight_kg || !donor.blood_type || !donor.district);
+        if (data.is_new_user || profileIncomplete) {
           navigate('/donor/profile/edit', { state: { newUser: true, message: 'Please complete your profile to continue.' } });
         } else {
           navigate('/donor/dashboard');

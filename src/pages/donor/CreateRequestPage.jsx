@@ -4,6 +4,7 @@ import ModernHeader from '../../components/ModernHeader';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axios';
 import MapPicker from '../../components/MapPicker';
+import SearchableSelect from '../../components/SearchableSelect';
 
 const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -11,6 +12,18 @@ const ChevronDown = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
   </svg>
+);
+
+// Must stay at module scope: defining this inside the page component made
+// React remount every input on each keystroke, dropping keyboard focus.
+const Field = ({ label, error, children, required = true }) => (
+  <div>
+    <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+      {label}{required && <span className="text-red-500 ml-0.5">*</span>}
+    </label>
+    {children}
+    {error && <p className="text-red-500 text-xs mt-1">{error[0]}</p>}
+  </div>
 );
 
 export default function DonorCreateRequestPage() {
@@ -87,16 +100,6 @@ export default function DonorCreateRequestPage() {
 
   const selectCls = (key) =>
     `w-full border rounded-xl py-3 px-3 text-sm bg-white appearance-none focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-transparent transition ${errors[key] ? 'border-red-400' : 'border-gray-200'}`;
-
-  const Field = ({ label, error, children, required = true }) => (
-    <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-        {label}{required && <span className="text-red-500 ml-0.5">*</span>}
-      </label>
-      {children}
-      {error && <p className="text-red-500 text-xs mt-1">{error[0]}</p>}
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] font-sans">
@@ -178,44 +181,26 @@ export default function DonorCreateRequestPage() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1.5">District<span className="text-red-500 ml-0.5">*</span></label>
-                <div className="relative">
-                  <select
-                    className={`${selectCls('district')} text-xs px-2 pr-6`}
-                    value={form.district}
-                    onChange={e => onDistrictChange(e.target.value)}
-                    required
-                  >
-                    <option value="">Select</option>
-                    {allDistricts.map(d => <option key={d} value={d}>{d}</option>)}
-                  </select>
-                  <span className="absolute inset-y-0 right-1.5 flex items-center pointer-events-none text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </span>
-                </div>
+                <SearchableSelect
+                  value={form.district}
+                  onChange={onDistrictChange}
+                  options={allDistricts}
+                  placeholder="Select"
+                  searchPlaceholder="Search district..."
+                />
                 {errors.district && <p className="text-red-500 text-xs mt-1">{errors.district[0]}</p>}
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700 mb-1.5">Upazila<span className="text-red-500 ml-0.5">*</span></label>
-                <div className="relative">
-                  <select
-                    className={`${selectCls('upazila')} text-xs px-2 pr-6`}
-                    value={form.upazila}
-                    onChange={set('upazila')}
-                    disabled={!form.district}
-                    required
-                  >
-                    <option value="">Select</option>
-                    {upazilas.map(u => <option key={u} value={u}>{u}</option>)}
-                  </select>
-                  <span className="absolute inset-y-0 right-1.5 flex items-center pointer-events-none text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </span>
-                </div>
+                <SearchableSelect
+                  value={form.upazila}
+                  onChange={val => setForm(f => ({ ...f, upazila: val }))}
+                  options={upazilas}
+                  placeholder="Select"
+                  searchPlaceholder="Search upazila..."
+                  disabled={!form.district}
+                />
                 {errors.upazila && <p className="text-red-500 text-xs mt-1">{errors.upazila[0]}</p>}
               </div>
             </div>

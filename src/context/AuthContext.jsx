@@ -21,8 +21,8 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const donorGoogleLogin = async (access_token) => {
-    const { data } = await api.post('/donor/google', { access_token });
+  const donorGoogleLogin = async ({ access_token, id_token }) => {
+    const { data } = await api.post('/donor/google', { access_token, id_token });
     localStorage.setItem('auth_token', data.token);
     localStorage.setItem('auth_user', JSON.stringify(data.donor));
     localStorage.setItem('auth_type', 'donor');

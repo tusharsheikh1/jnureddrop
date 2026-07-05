@@ -1,0 +1,13 @@
+{
+  "appId": "com.jnu.reddrop",
+  "appName": "Reddrop JNU",
+  "webDir": "dist",
+  "android": {
+    "adjustMarginsForEdgeToEdge": "auto"
+  },
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}
