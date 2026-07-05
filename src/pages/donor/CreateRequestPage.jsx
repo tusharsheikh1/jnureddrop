@@ -89,7 +89,13 @@ export default function DonorCreateRequestPage() {
       navigate('/donor/my-requests');
     } catch (err) {
       const d = err.response?.data;
-      if (d?.errors) setErrors(d.errors);
+      if (d?.errors) {
+        setErrors(d.errors);
+      } else if (err.response) {
+        setErrors({ general: [d?.message && d.message !== 'Server Error' ? d.message : 'Something went wrong on the server. Please try again.'] });
+      } else {
+        setErrors({ general: ['Network error. Check your connection and try again.'] });
+      }
     } finally {
       setLoading(false);
     }
@@ -226,6 +232,11 @@ export default function DonorCreateRequestPage() {
           </div>
 
           {/* Submit */}
+          {errors.general && (
+            <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3">
+              {errors.general[0]}
+            </div>
+          )}
           <button type="submit" disabled={loading || !form.blood_type}
             className="w-full bg-red-700 hover:bg-red-800 disabled:bg-red-300 text-white font-bold py-4 rounded-xl transition-colors text-base flex items-center justify-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
