@@ -11,6 +11,13 @@ function getInitials(name) {
   return (name || '').split(' ').slice(0, 2).map(n => n[0] || '').join('').toUpperCase() || '?';
 }
 
+function toWhatsAppNumber(phone) {
+  let d = (phone || '').replace(/\D/g, '');
+  if (d.startsWith('880')) return d;
+  if (d.startsWith('0')) d = d.slice(1);
+  return '880' + d;
+}
+
 function fmtDate(str) {
   if (!str) return null;
   return new Date(str).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -545,7 +552,7 @@ export default function DonorDetailsPage() {
           ) : (
             <div className="flex-1 flex bg-red-700 rounded-2xl overflow-hidden h-14 shadow-md">
               <a
-                href={donor.share_phone && donor.phone ? `https://wa.me/${donor.phone.replace(/\D/g, '')}` : `mailto:${donor.email}`}
+                href={donor.share_phone && donor.phone ? `https://wa.me/${toWhatsAppNumber(donor.phone)}` : `mailto:${donor.email}`}
                 target="_blank" rel="noopener noreferrer"
                 className="flex-1 flex items-center justify-center gap-2 text-white font-semibold hover:bg-red-800 transition-colors text-sm"
               >

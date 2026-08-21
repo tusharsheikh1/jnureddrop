@@ -5,6 +5,7 @@ import { NotificationProvider } from './context/NotificationContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
+import UpdateBanner from './components/UpdateBanner';
 
 import HomePage from './pages/public/HomePage';
 import FindDonorsPage from './pages/public/FindDonorsPage';
@@ -69,6 +70,7 @@ function GuestRoute({ children, adminOnly = false }) {
 function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col">
+      <UpdateBanner />
       <Navbar />
       <main className="flex-1 pb-16 md:pb-0">{children}</main>
       <div className="hidden md:block"><Footer /></div>

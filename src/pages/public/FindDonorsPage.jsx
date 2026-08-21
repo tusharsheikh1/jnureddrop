@@ -38,6 +38,13 @@ function getInitials(name) {
   return (name || '').split(' ').slice(0, 2).map(n => n[0] || '').join('').toUpperCase() || '?';
 }
 
+function toWhatsAppNumber(phone) {
+  let d = (phone || '').replace(/\D/g, '');
+  if (d.startsWith('880')) return d;
+  if (d.startsWith('0')) d = d.slice(1);
+  return '880' + d;
+}
+
 /* ─────────────────────────────────────────
    PhoneIcon
 ───────────────────────────────────────── */
@@ -410,7 +417,7 @@ function DonorCard({ donor }) {
               <a
                 href={
                   donor.share_phone && donor.phone
-                    ? `https://wa.me/${donor.phone.replace(/\D/g, '')}`
+                    ? `https://wa.me/${toWhatsAppNumber(donor.phone)}`
                     : `mailto:${donor.email}`
                 }
                 target="_blank"
@@ -547,10 +554,23 @@ export default function FindDonorsPage() {
     const next = { ...filters, district, upazila: '', page: 1 };
     setFilters(next);
     setUpazilas([]);
+    fetchDonors(next);
     if (district) {
       const { data } = await api.get(`/locations/upazilas/${district}`);
       setUpazilas(data);
     }
+  };
+
+  const onBloodTypeChange = (blood_type) => {
+    const next = { ...filters, blood_type, page: 1 };
+    setFilters(next);
+    fetchDonors(next);
+  };
+
+  const onUpazilaChange = (upazila) => {
+    const next = { ...filters, upazila, page: 1 };
+    setFilters(next);
+    fetchDonors(next);
   };
 
   const handleSearch = (e) => {
@@ -637,7 +657,7 @@ export default function FindDonorsPage() {
                 <select
                   className="w-full pl-7 pr-2 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-300 appearance-none bg-white"
                   value={filters.blood_type}
-                  onChange={e => setFilters(f => ({ ...f, blood_type: e.target.value }))}
+                  onChange={e => onBloodTypeChange(e.target.value)}
                 >
                   <option value="">All Types</option>
                   {BLOOD_TYPES.map(bt => <option key={bt} value={bt}>{bt}</option>)}
@@ -666,7 +686,7 @@ export default function FindDonorsPage() {
                 placeholder="All Upazilas"
                 value={filters.upazila}
                 options={upazilas}
-                onChange={val => setFilters(f => ({ ...f, upazila: val }))}
+                onChange={val => onUpazilaChange(val)}
                 icon={
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-gray-400">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
@@ -712,20 +732,6 @@ export default function FindDonorsPage() {
             </button>
           </div>
         </form>
-
-        {/* ══ TRUST NOTICE ══ */}
-        <div className="flex items-start gap-3 bg-red-50 border border-red-100 rounded-2xl px-4 py-3 mb-3 md:mb-0">
-          <span className="text-red-500 mt-0.5 flex-shrink-0">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              <polyline points="9 12 11 14 15 10"/>
-            </svg>
-          </span>
-          <div>
-            <p className="text-sm font-bold text-gray-800">Only verified donors are shown</p>
-            <p className="text-xs text-gray-500 mt-0.5">All donors are Jagannath University students.</p>
-          </div>
-        </div>
 
         </div>{/* end left column */}
 

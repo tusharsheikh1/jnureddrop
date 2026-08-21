@@ -50,21 +50,28 @@ function ChevronRightIcon() {
 }
 
 /* ── Request Card ── */
-function RequestCard({ req }) {
+function RequestCard({ req, index = 0 }) {
   const location = [req.upazila, req.district].filter(Boolean).join(', ');
   const ago = timeAgo(req.created_at);
   const fresh = isRecent(req.created_at);
 
   return (
-    <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden ${req.is_emergency ? 'border-red-100' : 'border-gray-100'}`}>
-      {req.is_emergency && (
-        <div className="h-0.5 bg-gradient-to-r from-red-500 to-red-400" />
-      )}
-      <div className="p-4">
+    <Link
+      to={`/requests/${req.id}`}
+      style={{ animationDelay: `${Math.min(index, 8) * 40}ms` }}
+      className="group relative flex bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-gray-200/60 hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 overflow-hidden animate-fade-slide-in"
+    >
+      {/* Accent bar */}
+      <div className={`w-1.5 flex-shrink-0 ${req.is_emergency ? 'bg-gradient-to-b from-red-500 to-red-600' : 'bg-gradient-to-b from-gray-200 to-gray-300'}`} />
+
+      <div className="flex-1 min-w-0 p-4">
         <div className="flex gap-3">
-          {/* Blood type */}
-          <div className={`flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${req.is_emergency ? 'bg-red-600' : 'bg-gray-800'}`}>
-            <span className="text-white font-black text-sm leading-none">{req.blood_type}</span>
+          {/* Blood type badge */}
+          <div className={`relative flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ring-1 ${req.is_emergency ? 'bg-gradient-to-br from-red-500 to-red-700 ring-red-700/20' : 'bg-gradient-to-br from-gray-700 to-gray-900 ring-gray-900/10'}`}>
+            <span className="text-white font-black text-sm leading-none tracking-tight">{req.blood_type}</span>
+            {fresh && (
+              <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 ring-2 ring-white" />
+            )}
           </div>
 
           <div className="flex-1 min-w-0">
@@ -75,11 +82,8 @@ function RequestCard({ req }) {
                 {req.is_emergency && (
                   <span className="flex-shrink-0 text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded-full uppercase tracking-wide">Urgent</span>
                 )}
-                {fresh && (
-                  <span className="flex-shrink-0 text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full uppercase">New</span>
-                )}
               </div>
-              <span className="flex-shrink-0 text-[11px] text-gray-400">{ago}</span>
+              <span className="flex-shrink-0 text-[11px] text-gray-400 font-medium">{ago}</span>
             </div>
 
             {/* Hospital */}
@@ -108,15 +112,12 @@ function RequestCard({ req }) {
               <span className="font-semibold">Condition:</span> {req.disease}
             </p>
           ) : <span />}
-          <Link
-            to={`/requests/${req.id}`}
-            className="flex-shrink-0 flex items-center gap-0.5 text-xs font-bold text-red-600 hover:text-red-700"
-          >
+          <span className="flex-shrink-0 flex items-center gap-0.5 text-xs font-bold text-red-600 group-hover:text-red-700 group-hover:gap-1.5 transition-all">
             View Details <ChevronRightIcon />
-          </Link>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -142,18 +143,20 @@ function SkeletonCard() {
 /* ── Empty State ── */
 function EmptyState({ hasFilters, onClear }) {
   return (
-    <div className="col-span-2 flex flex-col items-center justify-center py-16 text-center">
-      <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mb-4">
-        <svg className="w-8 h-8 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center py-20 text-center">
+      <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-red-50 to-red-100/60 flex items-center justify-center mb-4">
+        <svg className="w-9 h-9 text-red-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" />
         </svg>
       </div>
-      <p className="text-gray-700 font-semibold mb-1">No requests found</p>
-      <p className="text-xs text-gray-400 mb-4">
-        {hasFilters ? 'Try a different blood type or district.' : 'No blood requests right now.'}
+      <p className="text-gray-800 font-bold mb-1">
+        {hasFilters ? 'No matches' : 'All clear for now'}
+      </p>
+      <p className="text-xs text-gray-400 mb-4 max-w-[220px]">
+        {hasFilters ? 'Try a different blood type or district.' : 'No active blood requests right now — check back soon.'}
       </p>
       {hasFilters && (
-        <button onClick={onClear} className="text-sm font-semibold text-red-600 hover:text-red-700">
+        <button onClick={onClear} className="text-sm font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-colors">
           Clear filters
         </button>
       )}
@@ -169,20 +172,20 @@ export default function RequestsPage() {
   const [requests, setRequests]         = useState([]);
   const [meta, setMeta]                 = useState(null);
   const [allDistricts, setAllDistricts] = useState([]);
+  const [allUpazilas, setAllUpazilas]   = useState([]);
   const [loading, setLoading]           = useState(true);
   const [loadingMore, setLoadingMore]   = useState(false);
 
-  const [activeTab, setActiveTab] = useState('active');
-  const [filters, setFilters]     = useState({ blood_type: '', district: '', page: 1 });
+  const [filters, setFilters] = useState({ blood_type: '', district: '', upazila: '', page: 1 });
 
-  const hasFilters = !!(filters.blood_type || filters.district);
+  const hasFilters = !!(filters.blood_type || filters.district || filters.upazila);
 
-  const fetchRequests = async (f = filters, tab = activeTab, append = false) => {
+  const fetchRequests = async (f = filters, append = false) => {
     if (append) setLoadingMore(true);
     else setLoading(true);
     try {
       const params = Object.fromEntries(Object.entries(f).filter(([, v]) => v !== ''));
-      params.status = tab;
+      params.status = 'active';
       const { data } = await api.get('/requests', { params });
       setRequests(prev => append ? [...prev, ...data.requests.data] : data.requests.data);
       setMeta(data.requests);
@@ -191,7 +194,7 @@ export default function RequestsPage() {
     }
   };
 
-  useEffect(() => { fetchRequests(filters, activeTab); }, [activeTab]);
+  useEffect(() => { fetchRequests(filters); }, []);
 
   useEffect(() => {
     api.get('/locations/districts')
@@ -199,27 +202,35 @@ export default function RequestsPage() {
       .catch(() => {});
   }, []);
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    setFilters(f => ({ ...f, page: 1 }));
-  };
-
   const handleFilterChange = (key, val) => {
     const next = { ...filters, [key]: val, page: 1 };
     setFilters(next);
-    fetchRequests(next, activeTab);
+    fetchRequests(next);
+  };
+
+  const handleDistrictChange = (val) => {
+    const next = { ...filters, district: val, upazila: '', page: 1 };
+    setFilters(next);
+    fetchRequests(next);
+    setAllUpazilas([]);
+    if (val) {
+      api.get(`/locations/upazilas/${val}`)
+        .then(({ data }) => setAllUpazilas([...data].sort()))
+        .catch(() => {});
+    }
   };
 
   const clearFilters = () => {
-    const next = { blood_type: '', district: '', page: 1 };
+    const next = { blood_type: '', district: '', upazila: '', page: 1 };
     setFilters(next);
-    fetchRequests(next, activeTab);
+    fetchRequests(next);
+    setAllUpazilas([]);
   };
 
   const handleLoadMore = () => {
     const next = { ...filters, page: (meta?.current_page ?? 1) + 1 };
     setFilters(next);
-    fetchRequests(next, activeTab, true);
+    fetchRequests(next, true);
   };
 
   return (
@@ -232,17 +243,23 @@ export default function RequestsPage() {
 
       <ModernHeader title="Blood Requests" />
 
-      {/* Desktop header */}
-      <div className="hidden md:block bg-white border-b border-gray-100 py-6">
-        <div className="max-w-5xl mx-auto px-8 flex items-center justify-between">
+      {/* Hero */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-2xl md:max-w-5xl mx-auto px-4 md:px-8 py-5 md:py-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Blood Requests</h1>
-            <p className="text-sm text-gray-500 mt-1">Respond to blood requests in the JnU community</p>
+            <h1 className="hidden md:block text-2xl font-bold text-gray-900">Blood Requests</h1>
+            <p className="text-xs md:text-sm text-gray-500 md:mt-1 flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
+              </span>
+              {loading ? 'Loading…' : `${meta?.total ?? requests.length} active request${(meta?.total ?? requests.length) === 1 ? '' : 's'}`} near you
+            </p>
           </div>
           {isDonor && (
             <Link
               to="/notifications"
-              className="relative p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
+              className="hidden md:flex relative p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -257,79 +274,78 @@ export default function RequestsPage() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 pt-4 md:max-w-5xl md:px-8 md:pt-6">
-
-        {/* Tabs */}
-        <div className="flex border-b border-gray-200 mb-4">
-          {['active', 'fulfilled'].map(tab => (
+      {/* Sticky filter bar */}
+      <div className="sticky top-16 md:top-0 z-30 bg-[#FDFDFD]/90 backdrop-blur-md border-b border-gray-100">
+        <div className="max-w-2xl md:max-w-5xl mx-auto px-4 md:px-8 py-3">
+          {/* Blood type chips */}
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
             <button
-              key={tab}
-              onClick={() => handleTabChange(tab)}
-              className={`flex-1 py-2.5 text-sm font-semibold text-center relative transition-colors ${
-                activeTab === tab
-                  ? tab === 'active' ? 'text-red-600' : 'text-gray-800'
-                  : 'text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              {tab === 'active' ? 'Active' : 'Resolved'}
-              {activeTab === tab && (
-                <div className={`absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full ${tab === 'active' ? 'bg-red-600' : 'bg-gray-800'}`} />
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Blood type chips */}
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
-          <button
-            onClick={() => handleFilterChange('blood_type', '')}
-            className={`flex-shrink-0 px-3.5 py-1.5 text-xs font-bold rounded-full border transition-colors ${
-              !filters.blood_type
-                ? 'bg-red-600 text-white border-red-600'
-                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            All
-          </button>
-          {BLOOD_TYPES.map(bt => (
-            <button
-              key={bt}
-              onClick={() => handleFilterChange('blood_type', filters.blood_type === bt ? '' : bt)}
-              className={`flex-shrink-0 px-3.5 py-1.5 text-xs font-bold rounded-full border transition-colors ${
-                filters.blood_type === bt
-                  ? 'bg-red-600 text-white border-red-600'
+              onClick={() => handleFilterChange('blood_type', '')}
+              className={`flex-shrink-0 px-3.5 py-1.5 text-xs font-bold rounded-full border transition-all ${
+                !filters.blood_type
+                  ? 'bg-red-600 text-white border-red-600 shadow-sm shadow-red-200'
                   : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
               }`}
             >
-              {bt}
+              All
             </button>
-          ))}
-        </div>
-
-        {/* District + clear row */}
-        <div className="flex items-center gap-2 mt-2 mb-4">
-          <div className="relative flex-1">
-            <select
-              value={filters.district}
-              onChange={e => handleFilterChange('district', e.target.value)}
-              className="w-full appearance-none text-xs font-medium border border-gray-200 rounded-xl pl-3 pr-8 py-2 bg-white text-gray-700 outline-none focus:border-red-300 focus:ring-1 focus:ring-red-100 transition-all"
-            >
-              <option value="">All Districts</option>
-              {allDistricts.map(d => <option key={d} value={d}>{d}</option>)}
-            </select>
-            <svg className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <polyline points="6 9 12 15 18 9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            {BLOOD_TYPES.map(bt => (
+              <button
+                key={bt}
+                onClick={() => handleFilterChange('blood_type', filters.blood_type === bt ? '' : bt)}
+                className={`flex-shrink-0 px-3.5 py-1.5 text-xs font-bold rounded-full border transition-all ${
+                  filters.blood_type === bt
+                    ? 'bg-red-600 text-white border-red-600 shadow-sm shadow-red-200'
+                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                {bt}
+              </button>
+            ))}
           </div>
-          {hasFilters && (
-            <button
-              onClick={clearFilters}
-              className="flex-shrink-0 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-2 rounded-xl transition-colors"
-            >
-              Clear
-            </button>
-          )}
+
+          {/* District + Upazila + clear row */}
+          <div className="flex items-center gap-2 mt-2">
+            <div className="relative flex-1">
+              <select
+                value={filters.district}
+                onChange={e => handleDistrictChange(e.target.value)}
+                className="w-full appearance-none text-xs font-medium border border-gray-200 rounded-xl pl-3 pr-8 py-2 bg-white text-gray-700 outline-none focus:border-red-300 focus:ring-1 focus:ring-red-100 transition-all"
+              >
+                <option value="">All Districts</option>
+                {allDistricts.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+              <svg className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <polyline points="6 9 12 15 18 9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div className="relative flex-1">
+              <select
+                value={filters.upazila}
+                onChange={e => handleFilterChange('upazila', e.target.value)}
+                disabled={!filters.district}
+                className="w-full appearance-none text-xs font-medium border border-gray-200 rounded-xl pl-3 pr-8 py-2 bg-white text-gray-700 outline-none focus:border-red-300 focus:ring-1 focus:ring-red-100 transition-all disabled:bg-gray-50 disabled:text-gray-400"
+              >
+                <option value="">All Thanas</option>
+                {allUpazilas.map(u => <option key={u} value={u}>{u}</option>)}
+              </select>
+              <svg className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <polyline points="6 9 12 15 18 9" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            {hasFilters && (
+              <button
+                onClick={clearFilters}
+                className="flex-shrink-0 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-2 rounded-xl transition-colors"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 pt-4 md:max-w-5xl md:px-8 md:pt-6">
 
         {/* List */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -338,7 +354,7 @@ export default function RequestsPage() {
           ) : requests.length === 0 ? (
             <EmptyState hasFilters={hasFilters} onClear={clearFilters} />
           ) : (
-            requests.map(r => <RequestCard key={r.id} req={r} />)
+            requests.map((r, i) => <RequestCard key={r.id} req={r} index={i} />)
           )}
         </div>
 
