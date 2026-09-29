@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Capacitor } from '@capacitor/core';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 
@@ -8,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 import UpdateBanner from './components/UpdateBanner';
 
 import HomePage from './pages/public/HomePage';
+import OnboardingPage from './pages/public/OnboardingPage';
 import FindDonorsPage from './pages/public/FindDonorsPage';
 import RequestsPage from './pages/public/RequestsPage';
 import BlogPage from './pages/public/BlogPage';
@@ -78,6 +80,9 @@ function Layout({ children }) {
   );
 }
 
+const isNative = Capacitor.isNativePlatform();
+const onboardingDone = () => { try { return !!localStorage.getItem('onboarding_done'); } catch { return false; } };
+
 export default function App() {
   return (
     <AuthProvider>
@@ -85,8 +90,15 @@ export default function App() {
         <ScrollToTop />
         <NotificationProvider>
         <Routes>
+          {/* Onboarding — native only, shown once */}
+          <Route path="/onboarding" element={<OnboardingPage />} />
+
           {/* Public */}
-          <Route path="/" element={<Layout><HomePage /></Layout>} />
+          <Route path="/" element={
+            isNative && !onboardingDone()
+              ? <Navigate to="/onboarding" replace />
+              : <Layout><HomePage /></Layout>
+          } />
           <Route path="/find" element={<Layout><FindDonorsPage /></Layout>} />
           <Route path="/requests" element={<Layout><RequestsPage /></Layout>} />
           <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
