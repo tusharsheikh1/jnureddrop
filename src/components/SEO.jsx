@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-export const SITE_URL = 'https://reddrop.jnu.ac.bd';
+export const SITE_URL = 'https://www.jnureddrop.com';
 export const SITE_NAME = 'JnU RedDrop';
 const DEFAULT_IMAGE = `${SITE_URL}/logo.png`;
 const DEFAULT_DESCRIPTION =
