@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../api/axios';
 import Loader from '../../components/Loader';
+import { getShareOrigin } from '../../utils/shareUtils';
 
 const BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -617,7 +618,7 @@ export default function DonorDashboardPage() {
                   className="mt-3 bg-white text-red-600 font-semibold text-sm py-2 px-4 rounded-xl shadow-sm flex items-center gap-2 hover:bg-red-50 transition-colors"
                   onClick={() => {
                     if (navigator.share) {
-                      navigator.share({ title: 'JnU RedDrop', text: 'Join JnU RedDrop and help save lives!', url: window.location.origin });
+                      navigator.share({ title: 'JnU RedDrop', text: 'Join JnU RedDrop and help save lives!', url: getShareOrigin() });
                     }
                   }}
                 >

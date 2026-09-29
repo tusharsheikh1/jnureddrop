@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import ModernHeader from '../../components/ModernHeader';
 import Loader from '../../components/Loader';
 import SEO, { SITE_URL } from '../../components/SEO';
+import { getShareUrl } from '../../utils/shareUtils';
 
 /* ── Helpers ── */
 function getInitials(name) {
@@ -179,7 +180,7 @@ function generateDonorShareImage(donor) {
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('Contact this donor to help save a life', W / 2, fY + 22);
   ctx.fillStyle = '#EF4444'; ctx.font = `12px ${FONT}`;
-  const url = window.location.href;
+  const url = getShareUrl();
   ctx.fillText(url.length > 72 ? url.slice(0, 69) + '…' : url, W / 2, fY + 50);
 
   return canvas.toDataURL('image/png');
@@ -197,7 +198,7 @@ function ShareModal({ donor, onClose }) {
   }, [donor]);
 
   const copyLink = async () => {
-    const url = window.location.href;
+    const url = getShareUrl();
     try { await navigator.clipboard.writeText(url); }
     catch {
       const ta = document.createElement('textarea');
@@ -224,8 +225,8 @@ function ShareModal({ donor, onClose }) {
       const canShareFiles = navigator.canShare?.({ files: [file] });
       await navigator.share({
         title: `${donor.blood_type} blood donor — ${donor.name}`,
-        text: `${donor.name} is a ${donor.blood_type} blood donor${donor.district ? ` in ${donor.district}` : ''}. Contact them to donate!\n${window.location.href}`,
-        ...(canShareFiles ? { files: [file] } : { url: window.location.href }),
+        text: `${donor.name} is a ${donor.blood_type} blood donor${donor.district ? ` in ${donor.district}` : ''}. Contact them to donate!\n${getShareUrl()}`,
+        ...(canShareFiles ? { files: [file] } : { url: getShareUrl() }),
       });
     } catch { /* cancelled */ }
   };

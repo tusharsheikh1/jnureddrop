@@ -4,6 +4,7 @@ import api from '../../api/axios';
 import ModernHeader from '../../components/ModernHeader';
 import Loader from '../../components/Loader';
 import SEO, { SITE_URL } from '../../components/SEO';
+import { getShareUrl } from '../../utils/shareUtils';
 
 /* ── Helpers ── */
 function formatDate(str) {
@@ -201,7 +202,7 @@ function generateShareImage(req) {
 
   ctx.fillStyle = '#EF4444';
   ctx.font = `12px ${FONT}`;
-  const url = window.location.href;
+  const url = getShareUrl();
   let urlText = url;
   while (ctx.measureText(urlText).width > W - 40 && urlText.length > 10) urlText = urlText.slice(0, -1);
   if (urlText !== url) urlText += '…';
@@ -222,7 +223,7 @@ function ShareModal({ req, onClose }) {
   }, [req]);
 
   const copyLink = async () => {
-    const url = window.location.href;
+    const url = getShareUrl();
     try {
       await navigator.clipboard.writeText(url);
     } catch {
@@ -252,8 +253,8 @@ function ShareModal({ req, onClose }) {
       const canShareFiles = navigator.canShare && navigator.canShare({ files: [file] });
       await navigator.share({
         title: `Urgent: ${req.blood_type} blood needed`,
-        text: `${req.blood_type} blood urgently needed at ${req.hospital_name}. Please help!\n${window.location.href}`,
-        ...(canShareFiles ? { files: [file] } : { url: window.location.href }),
+        text: `${req.blood_type} blood urgently needed at ${req.hospital_name}. Please help!\n${getShareUrl()}`,
+        ...(canShareFiles ? { files: [file] } : { url: getShareUrl() }),
       });
     } catch { /* cancelled */ }
   };
