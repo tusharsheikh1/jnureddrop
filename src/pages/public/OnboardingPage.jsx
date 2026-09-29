@@ -1,119 +1,422 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+/* ── Illustrations ─────────────────────────────────────────── */
+
+const IllustrationHero = () => (
+  <svg viewBox="0 0 320 280" fill="none" className="w-full max-w-xs">
+    {/* Background glow */}
+    <ellipse cx="160" cy="200" rx="120" ry="30" fill="rgba(255,255,255,0.08)" />
+
+    {/* City / hospital silhouette */}
+    <rect x="30" y="160" width="40" height="80" rx="3" fill="rgba(255,255,255,0.12)" />
+    <rect x="38" y="148" width="24" height="14" rx="2" fill="rgba(255,255,255,0.18)" />
+    <rect x="48" y="138" width="4" height="12" fill="rgba(255,255,255,0.25)" />
+    <rect x="250" y="170" width="35" height="70" rx="3" fill="rgba(255,255,255,0.1)" />
+    <rect x="258" y="160" width="19" height="12" rx="2" fill="rgba(255,255,255,0.15)" />
+
+    {/* Large heart */}
+    <path
+      d="M160 220 C160 220 90 175 90 128 C90 104 108 88 128 88 C140 88 152 95 160 106 C168 95 180 88 192 88 C212 88 230 104 230 128 C230 175 160 220 160 220Z"
+      fill="white"
+      opacity="0.95"
+    />
+    {/* Heart shine */}
+    <path
+      d="M120 108 C114 118 112 130 115 142"
+      stroke="rgba(239,68,68,0.3)"
+      strokeWidth="6"
+      strokeLinecap="round"
+    />
+
+    {/* Blood drop falling into heart */}
+    <ellipse cx="160" cy="52" rx="14" ry="18" fill="rgba(255,255,255,0.9)" />
+    <path d="M146 56 Q160 76 174 56" fill="rgba(255,255,255,0.9)" />
+    {/* Drop shine */}
+    <ellipse cx="155" cy="47" rx="4" ry="5" fill="white" opacity="0.5" />
+
+    {/* Pulse line */}
+    <polyline
+      points="60,155 85,155 95,130 108,175 118,140 130,160 150,155 260,155"
+      stroke="rgba(255,255,255,0.5)"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+
+    {/* Floating sparkles */}
+    <circle cx="70" cy="100" r="4" fill="rgba(255,255,255,0.4)" />
+    <circle cx="80" cy="85" r="2.5" fill="rgba(255,255,255,0.3)" />
+    <circle cx="58" cy="90" r="2" fill="rgba(255,255,255,0.25)" />
+    <circle cx="250" cy="105" r="4" fill="rgba(255,255,255,0.4)" />
+    <circle cx="262" cy="90" r="2.5" fill="rgba(255,255,255,0.3)" />
+    <circle cx="240" cy="118" r="2" fill="rgba(255,255,255,0.25)" />
+  </svg>
+);
+
+const IllustrationWhy = () => (
+  <svg viewBox="0 0 320 280" fill="none" className="w-full max-w-xs">
+    <ellipse cx="160" cy="210" rx="110" ry="25" fill="rgba(255,255,255,0.07)" />
+
+    {/* Person silhouette */}
+    <circle cx="160" cy="80" r="36" fill="rgba(255,255,255,0.2)" />
+    <circle cx="160" cy="78" r="28" fill="white" opacity="0.9" />
+    {/* Face */}
+    <circle cx="152" cy="74" r="4" fill="rgba(239,68,68,0.5)" />
+    <circle cx="168" cy="74" r="4" fill="rgba(239,68,68,0.5)" />
+    <path d="M150 86 Q160 94 170 86" stroke="rgba(239,68,68,0.6)" strokeWidth="3" strokeLinecap="round" fill="none" />
+
+    {/* Body */}
+    <path d="M120 116 Q140 108 160 108 Q180 108 200 116 L210 190 H110 Z" fill="rgba(255,255,255,0.15)" />
+    <path d="M120 116 Q140 108 160 108 Q180 108 200 116 L205 165 H115 Z" fill="rgba(255,255,255,0.2)" />
+
+    {/* Cape / hero element */}
+    <path d="M115 130 Q90 155 95 185 Q130 170 160 175 Q190 170 225 185 Q230 155 205 130"
+      fill="rgba(255,255,255,0.15)" />
+
+    {/* Heart badge on chest */}
+    <circle cx="160" cy="145" r="18" fill="rgba(239,68,68,0.25)" />
+    <path d="M160 153 C160 153 148 146 148 139 C148 134 152 131 156 131 C158 131 160 133 160 133 C160 133 162 131 164 131 C168 131 172 134 172 139 C172 146 160 153 160 153Z"
+      fill="white" opacity="0.9" />
+
+    {/* Stats pills floating */}
+    <rect x="32" y="95" width="68" height="28" rx="14" fill="rgba(255,255,255,0.18)" />
+    <text x="66" y="113" textAnchor="middle" fontSize="11" fill="white" fontFamily="system-ui, sans-serif" fontWeight="700">3 lives saved</text>
+
+    <rect x="218" y="95" width="72" height="28" rx="14" fill="rgba(255,255,255,0.18)" />
+    <text x="254" y="113" textAnchor="middle" fontSize="11" fill="white" fontFamily="system-ui, sans-serif" fontWeight="700">10 min only</text>
+
+    <rect x="85" y="198" width="150" height="28" rx="14" fill="rgba(255,255,255,0.15)" />
+    <text x="160" y="216" textAnchor="middle" fontSize="11" fill="white" fontFamily="system-ui, sans-serif" fontWeight="700">Every 2 sec someone needs blood</text>
+  </svg>
+);
+
+const IllustrationBenefits = () => (
+  <svg viewBox="0 0 320 280" fill="none" className="w-full max-w-xs">
+    <ellipse cx="160" cy="215" rx="115" ry="26" fill="rgba(255,255,255,0.07)" />
+
+    {/* Large shield */}
+    <path d="M160 40 L220 68 L220 148 C220 182 160 210 160 210 C160 210 100 182 100 148 L100 68 Z"
+      fill="rgba(255,255,255,0.15)" />
+    <path d="M160 52 L210 76 L210 148 C210 178 160 202 160 202 C160 202 110 178 110 148 L110 76 Z"
+      fill="rgba(255,255,255,0.12)" />
+
+    {/* Inner shield glow */}
+    <path d="M160 68 L198 86 L198 144 C198 165 160 182 160 182 C160 182 122 165 122 144 L122 86 Z"
+      fill="rgba(255,255,255,0.18)" />
+
+    {/* Checkmark inside shield */}
+    <path d="M140 128 L153 142 L182 110"
+      stroke="white" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
+
+    {/* Benefit icons around */}
+    <circle cx="60" cy="85" r="24" fill="rgba(255,255,255,0.15)" />
+    <text x="60" y="93" textAnchor="middle" fontSize="20">❤️</text>
+
+    <circle cx="260" cy="85" r="24" fill="rgba(255,255,255,0.15)" />
+    <text x="260" y="93" textAnchor="middle" fontSize="20">🔬</text>
+
+    <circle cx="55" cy="165" r="24" fill="rgba(255,255,255,0.15)" />
+    <text x="55" y="173" textAnchor="middle" fontSize="20">⚡</text>
+
+    <circle cx="265" cy="165" r="24" fill="rgba(255,255,255,0.15)" />
+    <text x="265" y="173" textAnchor="middle" fontSize="20">🌟</text>
+
+    {/* Connecting lines */}
+    <line x1="84" y1="90" x2="110" y2="102" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeDasharray="4 3" />
+    <line x1="236" y1="90" x2="210" y2="102" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeDasharray="4 3" />
+    <line x1="79" y1="155" x2="110" y2="145" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeDasharray="4 3" />
+    <line x1="241" y1="155" x2="210" y2="145" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeDasharray="4 3" />
+  </svg>
+);
+
+const IllustrationCommunity = () => (
+  <svg viewBox="0 0 320 280" fill="none" className="w-full max-w-xs">
+    <ellipse cx="160" cy="220" rx="120" ry="28" fill="rgba(255,255,255,0.07)" />
+
+    {/* Map pin / location */}
+    <path d="M160 30 C138 30 120 48 120 70 C120 100 160 140 160 140 C160 140 200 100 200 70 C200 48 182 30 160 30Z"
+      fill="rgba(255,255,255,0.25)" />
+    <circle cx="160" cy="70" r="20" fill="white" opacity="0.9" />
+    <path d="M160 63 C160 63 150 69 150 76 C150 80 152 83 156 83 C158 83 160 81 160 81 C160 81 162 83 164 83 C168 83 170 80 170 76 C170 69 160 63 160 63Z"
+      fill="rgba(239,68,68,0.7)" />
+
+    {/* Person 1 - left */}
+    <circle cx="72" cy="155" r="22" fill="rgba(255,255,255,0.2)" />
+    <circle cx="72" cy="152" r="14" fill="white" opacity="0.85" />
+    <rect x="52" y="168" width="40" height="38" rx="8" fill="rgba(255,255,255,0.18)" />
+    <circle cx="72" cy="147" r="6" fill="rgba(239,68,68,0.4)" />
+
+    {/* Person 2 - right */}
+    <circle cx="248" cy="155" r="22" fill="rgba(255,255,255,0.2)" />
+    <circle cx="248" cy="152" r="14" fill="white" opacity="0.85" />
+    <rect x="228" y="168" width="40" height="38" rx="8" fill="rgba(255,255,255,0.18)" />
+    <circle cx="248" cy="147" r="6" fill="rgba(239,68,68,0.4)" />
+
+    {/* Person 3 - center bottom */}
+    <circle cx="160" cy="175" r="24" fill="rgba(255,255,255,0.22)" />
+    <circle cx="160" cy="172" r="16" fill="white" opacity="0.9" />
+    <rect x="136" y="190" width="48" height="40" rx="8" fill="rgba(255,255,255,0.2)" />
+    <circle cx="160" cy="166" r="7" fill="rgba(239,68,68,0.5)" />
+
+    {/* Connection lines */}
+    <line x1="94" y1="162" x2="136" y2="178" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeDasharray="5 4" />
+    <line x1="226" y1="162" x2="184" y2="178" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeDasharray="5 4" />
+
+    {/* JnU label */}
+    <rect x="105" y="52" width="110" height="30" rx="15" fill="rgba(255,255,255,0.2)" />
+    <text x="160" y="72" textAnchor="middle" fontSize="13" fill="white" fontFamily="system-ui, sans-serif" fontWeight="800">JnU RedDrop</text>
+
+    {/* Floating hearts */}
+    <text x="42" y="120" fontSize="16" opacity="0.6">♥</text>
+    <text x="272" y="120" fontSize="16" opacity="0.6">♥</text>
+    <text x="154" y="238" fontSize="14" opacity="0.5">♥</text>
+  </svg>
+);
+
+/* ── Slide data ────────────────────────────────────────────── */
 
 const SLIDES = [
   {
-    key: 'hero',
-    bg: 'from-red-600 to-red-800',
-    icon: (
-      <svg viewBox="0 0 100 100" className="w-40 h-40 drop-shadow-2xl" fill="none">
-        <circle cx="50" cy="50" r="48" fill="rgba(255,255,255,0.12)" />
-        <path
-          d="M50 75 C50 75 20 57 20 38 C20 27 28 20 38 20 C43 20 48 23 50 27 C52 23 57 20 62 20 C72 20 80 27 80 38 C80 57 50 75 50 75Z"
-          fill="white"
-        />
-        <text x="50" y="85" textAnchor="middle" fontSize="11" fill="rgba(255,255,255,0.7)" fontFamily="system-ui">
-          Every drop counts
-        </text>
-      </svg>
-    ),
-    title: 'Become a Hero',
-    subtitle: 'One donation saves up to 3 lives',
-    points: [
-      { icon: '🩸', text: '1 unit of blood can save up to 3 lives' },
-      { icon: '⏱️', text: 'Takes only 10–15 minutes to donate' },
-      { icon: '🏥', text: 'Hospitals need blood every 2 seconds' },
-      { icon: '🎓', text: 'JnU students save lives in our community' },
+    gradient: ['#C41E2A', '#7B0D1E'],
+    accentLight: 'rgba(255,100,100,0.15)',
+    illustration: <IllustrationHero />,
+    tag: 'Save Lives',
+    title: 'Become a\nBlood Hero',
+    body: 'One donation from you can save up to 3 lives. Be the reason someone gets to go home.',
+    stats: [
+      { value: '3', label: 'Lives per donation' },
+      { value: '10m', label: 'Time it takes' },
     ],
   },
   {
-    key: 'benefits',
-    bg: 'from-rose-500 to-pink-700',
-    icon: (
-      <svg viewBox="0 0 100 100" className="w-40 h-40 drop-shadow-2xl" fill="none">
-        <circle cx="50" cy="50" r="48" fill="rgba(255,255,255,0.12)" />
-        <path d="M30 50 L44 64 L70 36" stroke="white" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="50" cy="50" r="30" stroke="white" strokeWidth="4" />
-      </svg>
-    ),
-    title: 'Good for You Too',
-    subtitle: 'Donating blood benefits your health',
-    points: [
-      { icon: '❤️', text: 'Reduces risk of heart disease & stroke' },
-      { icon: '🔬', text: 'Free mini health check every donation' },
-      { icon: '⚡', text: 'Stimulates new red blood cell production' },
-      { icon: '🌟', text: 'Burns ~650 calories per donation' },
+    gradient: ['#B91C1C', '#6B21A8'],
+    accentLight: 'rgba(180,100,255,0.15)',
+    illustration: <IllustrationWhy />,
+    tag: 'Why Donate',
+    title: 'Every 2\nSeconds…',
+    body: 'Someone in Bangladesh needs blood. Hospitals run low daily. Your blood type could be the only match.',
+    stats: [
+      { value: '108M', label: 'Units needed/year' },
+      { value: '40%', label: 'Shortage in BD' },
+    ],
+  },
+  {
+    gradient: ['#9D174D', '#BE185D'],
+    accentLight: 'rgba(255,100,180,0.15)',
+    illustration: <IllustrationBenefits />,
+    tag: 'Your Health',
+    title: 'Good for\nYou Too',
+    body: 'Regular donors enjoy real health perks — your body regenerates stronger blood after each donation.',
+    bullets: [
+      { emoji: '❤️', text: 'Lowers risk of heart disease & stroke' },
+      { emoji: '🔬', text: 'Free blood pressure & iron check' },
+      { emoji: '⚡', text: 'Boosts new red blood cell production' },
+      { emoji: '🔥', text: 'Burns ~650 calories per session' },
+    ],
+  },
+  {
+    gradient: ['#991B1B', '#DC2626'],
+    accentLight: 'rgba(255,160,100,0.12)',
+    illustration: <IllustrationCommunity />,
+    tag: 'JnU Community',
+    title: 'Join Our\nHero Network',
+    body: 'Connect with fellow JnU donors. Be found instantly when someone nearby needs your blood type.',
+    bullets: [
+      { emoji: '🎓', text: 'Exclusive to Jagannath University' },
+      { emoji: '📍', text: 'Location-aware donor matching' },
+      { emoji: '🔔', text: 'Instant alerts when you\'re needed' },
+      { emoji: '🏆', text: 'Earn recognition as a top donor' },
     ],
   },
 ];
 
+/* ── Component ─────────────────────────────────────────────── */
+
 export default function OnboardingPage() {
   const [slide, setSlide] = useState(0);
+  const [dir, setDir] = useState(1); // 1=forward -1=back
+  const [animating, setAnimating] = useState(false);
+  const touchStart = useRef(null);
   const navigate = useNavigate();
+
+  const total = SLIDES.length;
+  const current = SLIDES[slide];
+
+  const goTo = (next) => {
+    if (animating || next === slide) return;
+    setDir(next > slide ? 1 : -1);
+    setAnimating(true);
+    setTimeout(() => {
+      setSlide(next);
+      setAnimating(false);
+    }, 220);
+  };
 
   const finish = () => {
     try { localStorage.setItem('onboarding_done', '1'); } catch {}
     navigate('/donor/login', { replace: true });
   };
 
-  const next = () => {
-    if (slide < SLIDES.length - 1) setSlide(slide + 1);
-    else finish();
+  const next = () => { if (slide < total - 1) goTo(slide + 1); else finish(); };
+  const prev = () => { if (slide > 0) goTo(slide - 1); };
+
+  const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStart.current === null) return;
+    const dx = touchStart.current - e.changedTouches[0].clientX;
+    touchStart.current = null;
+    if (Math.abs(dx) < 40) return;
+    if (dx > 0) next(); else prev();
   };
 
-  const { bg, icon, title, subtitle, points } = SLIDES[slide];
+  const [g1, g2] = current.gradient;
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br ${bg} flex flex-col select-none`}>
-      {/* Skip */}
-      <div className="flex justify-end p-5 pt-safe">
-        <button
-          onClick={finish}
-          className="text-white/70 text-sm font-semibold tracking-wide px-3 py-1 rounded-full border border-white/20"
+    <div
+      className="min-h-screen flex flex-col select-none overflow-hidden"
+      style={{ background: `linear-gradient(160deg, ${g1} 0%, ${g2} 100%)` }}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-6 pt-12 pb-2">
+        {/* Logo */}
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="white">
+              <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/>
+            </svg>
+          </div>
+          <span className="text-white font-bold text-sm tracking-wide">JnU RedDrop</span>
+        </div>
+
+        {slide < total - 1 && (
+          <button
+            onClick={finish}
+            className="text-white/60 text-sm font-semibold px-4 py-1.5 rounded-full border border-white/20 backdrop-blur-sm"
+          >
+            Skip
+          </button>
+        )}
+      </div>
+
+      {/* Step indicator — thin line */}
+      <div className="flex gap-1.5 px-6 pt-3 pb-1">
+        {SLIDES.map((_, i) => (
+          <div
+            key={i}
+            className="h-1 rounded-full flex-1 transition-all duration-500"
+            style={{ background: i <= slide ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.2)' }}
+          />
+        ))}
+      </div>
+
+      {/* Tag pill */}
+      <div className="px-6 pt-4">
+        <span
+          className="inline-block text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full"
+          style={{ background: current.accentLight, color: 'rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.15)' }}
         >
-          Skip
-        </button>
+          {current.tag}
+        </span>
+      </div>
+
+      {/* Title */}
+      <div className="px-6 pt-3">
+        <h1 className="text-white font-extrabold leading-none" style={{ fontSize: 'clamp(2rem, 8vw, 2.6rem)', whiteSpace: 'pre-line' }}>
+          {current.title}
+        </h1>
       </div>
 
       {/* Illustration */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 pb-4">
-        <div className="mb-8">{icon}</div>
-
-        <h1 className="text-white text-3xl font-extrabold text-center leading-tight mb-2">
-          {title}
-        </h1>
-        <p className="text-white/75 text-base text-center mb-10">{subtitle}</p>
-
-        {/* Points */}
-        <div className="w-full max-w-sm space-y-3">
-          {points.map(({ icon: ic, text }) => (
-            <div key={text} className="flex items-center gap-3 bg-white/10 rounded-2xl px-4 py-3">
-              <span className="text-xl flex-shrink-0">{ic}</span>
-              <span className="text-white text-sm font-medium leading-snug">{text}</span>
-            </div>
-          ))}
-        </div>
+      <div
+        className="flex-1 flex items-center justify-center px-4 py-2"
+        style={{
+          opacity: animating ? 0 : 1,
+          transform: animating ? `translateX(${dir * 40}px)` : 'translateX(0)',
+          transition: 'opacity 0.22s ease, transform 0.22s ease',
+        }}
+      >
+        {current.illustration}
       </div>
 
-      {/* Bottom */}
-      <div className="px-8 pb-10 pb-safe space-y-4">
-        {/* Dots */}
-        <div className="flex justify-center gap-2 mb-2">
+      {/* Content card */}
+      <div
+        className="mx-4 mb-5 rounded-3xl p-5"
+        style={{
+          background: 'rgba(0,0,0,0.25)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          opacity: animating ? 0 : 1,
+          transform: animating ? `translateY(${dir * 20}px)` : 'translateY(0)',
+          transition: 'opacity 0.22s ease, transform 0.22s ease',
+        }}
+      >
+        <p className="text-white/85 text-sm leading-relaxed mb-4">{current.body}</p>
+
+        {current.stats && (
+          <div className="flex gap-3">
+            {current.stats.map(({ value, label }) => (
+              <div key={label} className="flex-1 rounded-2xl py-3 text-center" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                <div className="text-white font-black text-2xl leading-none">{value}</div>
+                <div className="text-white/60 text-xs mt-1 font-medium">{label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {current.bullets && (
+          <div className="grid grid-cols-2 gap-2">
+            {current.bullets.map(({ emoji, text }) => (
+              <div key={text} className="flex items-start gap-2 rounded-2xl p-3" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                <span className="text-base flex-shrink-0 mt-0.5">{emoji}</span>
+                <span className="text-white/80 text-xs font-medium leading-snug">{text}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Bottom nav */}
+      <div className="px-6 pb-10 space-y-3">
+        <button
+          onClick={next}
+          className="w-full py-4 rounded-2xl font-extrabold text-base shadow-lg active:scale-[0.97] transition-transform"
+          style={{
+            background: 'white',
+            color: g1,
+            boxShadow: `0 8px 32px rgba(0,0,0,0.25)`,
+          }}
+        >
+          {slide < total - 1 ? 'Continue' : '🩸 Get Started — Join Now'}
+        </button>
+
+        {slide > 0 && slide < total - 1 && (
+          <button
+            onClick={prev}
+            className="w-full py-3 rounded-2xl font-semibold text-sm text-white/60 border border-white/15 active:scale-[0.97] transition-transform"
+          >
+            ← Back
+          </button>
+        )}
+
+        {/* Dot indicators */}
+        <div className="flex justify-center gap-2 pt-1">
           {SLIDES.map((_, i) => (
             <button
               key={i}
-              onClick={() => setSlide(i)}
-              className={`h-2 rounded-full transition-all ${i === slide ? 'w-6 bg-white' : 'w-2 bg-white/40'}`}
+              onClick={() => goTo(i)}
+              className="rounded-full transition-all duration-300"
+              style={{
+                width: i === slide ? 24 : 8,
+                height: 8,
+                background: i === slide ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
+              }}
             />
           ))}
         </div>
-
-        <button
-          onClick={next}
-          className="w-full bg-white text-red-700 font-extrabold text-base py-4 rounded-2xl shadow-lg active:scale-[0.97] transition-transform"
-        >
-          {slide < SLIDES.length - 1 ? 'Next →' : 'Get Started'}
-        </button>
       </div>
     </div>
   );
