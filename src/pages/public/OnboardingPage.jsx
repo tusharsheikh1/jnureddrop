@@ -236,7 +236,7 @@ const SLIDES = [
 
 export default function OnboardingPage() {
   const [slide, setSlide] = useState(0);
-  const [dir, setDir] = useState(1); // 1=forward -1=back
+  const [dir, setDir] = useState(1);
   const [animating, setAnimating] = useState(false);
   const touchStart = useRef(null);
   const navigate = useNavigate();
@@ -248,10 +248,7 @@ export default function OnboardingPage() {
     if (animating || next === slide) return;
     setDir(next > slide ? 1 : -1);
     setAnimating(true);
-    setTimeout(() => {
-      setSlide(next);
-      setAnimating(false);
-    }, 220);
+    setTimeout(() => { setSlide(next); setAnimating(false); }, 200);
   };
 
   const finish = () => {
@@ -275,148 +272,142 @@ export default function OnboardingPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col select-none overflow-hidden"
-      style={{ background: `linear-gradient(160deg, ${g1} 0%, ${g2} 100%)` }}
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
+      style={{
+        position: 'fixed', inset: 0,
+        background: `linear-gradient(160deg, ${g1} 0%, ${g2} 100%)`,
+        display: 'flex', flexDirection: 'column',
+        userSelect: 'none', overflow: 'hidden',
+      }}
     >
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-6 pt-12 pb-2">
-        {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="white">
+      {/* ── Top bar: logo + skip ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 24px 0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white">
               <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/>
             </svg>
           </div>
-          <span className="text-white font-bold text-sm tracking-wide">JnU RedDrop</span>
+          <span style={{ color: 'white', fontWeight: 700, fontSize: 13, letterSpacing: 0.4 }}>JnU RedDrop</span>
         </div>
-
         {slide < total - 1 && (
-          <button
-            onClick={finish}
-            className="text-white/60 text-sm font-semibold px-4 py-1.5 rounded-full border border-white/20 backdrop-blur-sm"
-          >
+          <button onClick={finish} style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13, fontWeight: 600, padding: '6px 14px', borderRadius: 20, border: '1px solid rgba(255,255,255,0.2)', background: 'none', cursor: 'pointer' }}>
             Skip
           </button>
         )}
       </div>
 
-      {/* Step indicator — thin line */}
-      <div className="flex gap-1.5 px-6 pt-3 pb-1">
+      {/* ── Progress bar ── */}
+      <div style={{ display: 'flex', gap: 6, padding: '12px 24px 0' }}>
         {SLIDES.map((_, i) => (
-          <div
-            key={i}
-            className="h-1 rounded-full flex-1 transition-all duration-500"
-            style={{ background: i <= slide ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.2)' }}
-          />
+          <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= slide ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.2)', transition: 'background 0.4s' }} />
         ))}
       </div>
 
-      {/* Tag pill */}
-      <div className="px-6 pt-4">
-        <span
-          className="inline-block text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full"
-          style={{ background: current.accentLight, color: 'rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.15)' }}
-        >
+      {/* ── Tag + Title ── */}
+      <div style={{ padding: '14px 24px 0' }}>
+        <span style={{
+          display: 'inline-block', fontSize: 10, fontWeight: 700, letterSpacing: 1.5,
+          textTransform: 'uppercase', color: 'rgba(255,255,255,0.8)',
+          background: current.accentLight, border: '1px solid rgba(255,255,255,0.15)',
+          padding: '3px 10px', borderRadius: 20,
+        }}>
           {current.tag}
         </span>
-      </div>
-
-      {/* Title */}
-      <div className="px-6 pt-3">
-        <h1 className="text-white font-extrabold leading-none" style={{ fontSize: 'clamp(2rem, 8vw, 2.6rem)', whiteSpace: 'pre-line' }}>
+        <h1 style={{
+          color: 'white', fontWeight: 900, lineHeight: 1.05, marginTop: 8,
+          fontSize: 'clamp(1.7rem, 7vw, 2.4rem)', whiteSpace: 'pre-line',
+        }}>
           {current.title}
         </h1>
       </div>
 
-      {/* Illustration */}
-      <div
-        className="flex-1 flex items-center justify-center px-4 py-2"
-        style={{
-          opacity: animating ? 0 : 1,
-          transform: animating ? `translateX(${dir * 40}px)` : 'translateX(0)',
-          transition: 'opacity 0.22s ease, transform 0.22s ease',
-        }}
-      >
+      {/* ── Illustration — fixed height, no flex-1 ── */}
+      <div style={{
+        height: '28%', minHeight: 130, maxHeight: 200,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '0 16px',
+        opacity: animating ? 0 : 1,
+        transform: animating ? `translateX(${dir * 36}px)` : 'translateX(0)',
+        transition: 'opacity 0.2s ease, transform 0.2s ease',
+      }}>
         {current.illustration}
       </div>
 
-      {/* Content card */}
-      <div
-        className="mx-4 mb-5 rounded-3xl p-5"
-        style={{
-          background: 'rgba(0,0,0,0.25)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          opacity: animating ? 0 : 1,
-          transform: animating ? `translateY(${dir * 20}px)` : 'translateY(0)',
-          transition: 'opacity 0.22s ease, transform 0.22s ease',
-        }}
-      >
-        <p className="text-white/85 text-sm leading-relaxed mb-4">{current.body}</p>
+      {/* ── Content card ── */}
+      <div style={{
+        margin: '0 16px',
+        background: 'rgba(0,0,0,0.22)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.12)',
+        borderRadius: 24, padding: '14px 16px',
+        opacity: animating ? 0 : 1,
+        transform: animating ? `translateY(${dir * 16}px)` : 'translateY(0)',
+        transition: 'opacity 0.2s ease, transform 0.2s ease',
+      }}>
+        <p style={{ color: 'rgba(255,255,255,0.82)', fontSize: 13, lineHeight: 1.55, marginBottom: 12 }}>
+          {current.body}
+        </p>
 
         {current.stats && (
-          <div className="flex gap-3">
+          <div style={{ display: 'flex', gap: 10 }}>
             {current.stats.map(({ value, label }) => (
-              <div key={label} className="flex-1 rounded-2xl py-3 text-center" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                <div className="text-white font-black text-2xl leading-none">{value}</div>
-                <div className="text-white/60 text-xs mt-1 font-medium">{label}</div>
+              <div key={label} style={{ flex: 1, background: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: '10px 8px', textAlign: 'center' }}>
+                <div style={{ color: 'white', fontWeight: 900, fontSize: 22, lineHeight: 1 }}>{value}</div>
+                <div style={{ color: 'rgba(255,255,255,0.55)', fontSize: 11, marginTop: 4, fontWeight: 500 }}>{label}</div>
               </div>
             ))}
           </div>
         )}
 
         {current.bullets && (
-          <div className="grid grid-cols-2 gap-2">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
             {current.bullets.map(({ emoji, text }) => (
-              <div key={text} className="flex items-start gap-2 rounded-2xl p-3" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                <span className="text-base flex-shrink-0 mt-0.5">{emoji}</span>
-                <span className="text-white/80 text-xs font-medium leading-snug">{text}</span>
+              <div key={text} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, background: 'rgba(255,255,255,0.08)', borderRadius: 14, padding: '10px 10px' }}>
+                <span style={{ fontSize: 15, flexShrink: 0 }}>{emoji}</span>
+                <span style={{ color: 'rgba(255,255,255,0.78)', fontSize: 11, fontWeight: 500, lineHeight: 1.4 }}>{text}</span>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {/* Bottom nav */}
-      <div className="px-6 pb-10 space-y-3">
-        <button
-          onClick={next}
-          className="w-full py-4 rounded-2xl font-extrabold text-base shadow-lg active:scale-[0.97] transition-transform"
-          style={{
-            background: 'white',
-            color: g1,
-            boxShadow: `0 8px 32px rgba(0,0,0,0.25)`,
-          }}
-        >
-          {slide < total - 1 ? 'Continue' : '🩸 Get Started — Join Now'}
-        </button>
-
-        {slide > 0 && slide < total - 1 && (
-          <button
-            onClick={prev}
-            className="w-full py-3 rounded-2xl font-semibold text-sm text-white/60 border border-white/15 active:scale-[0.97] transition-transform"
-          >
-            ← Back
-          </button>
-        )}
-
-        {/* Dot indicators */}
-        <div className="flex justify-center gap-2 pt-1">
+      {/* ── Bottom nav ── */}
+      <div style={{ padding: '12px 24px 32px' }}>
+        {/* Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 12 }}>
           {SLIDES.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
-              className="rounded-full transition-all duration-300"
               style={{
-                width: i === slide ? 24 : 8,
-                height: 8,
+                width: i === slide ? 22 : 7, height: 7, borderRadius: 4,
                 background: i === slide ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)',
+                border: 'none', cursor: 'pointer', padding: 0,
+                transition: 'width 0.3s, background 0.3s',
               }}
             />
           ))}
         </div>
+
+        {/* CTA */}
+        <button
+          onClick={next}
+          style={{
+            width: '100%', padding: '15px 0', borderRadius: 18,
+            background: 'white', color: g1,
+            fontWeight: 800, fontSize: 15, border: 'none', cursor: 'pointer',
+            boxShadow: '0 6px 24px rgba(0,0,0,0.22)',
+            transition: 'transform 0.1s',
+          }}
+          onMouseDown={e => e.currentTarget.style.transform = 'scale(0.97)'}
+          onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+          onTouchStart={e => e.currentTarget.style.transform = 'scale(0.97)'}
+          onTouchEnd={e => { e.currentTarget.style.transform = 'scale(1)'; }}
+        >
+          {slide < total - 1 ? 'Continue →' : '🩸 Get Started'}
+        </button>
       </div>
     </div>
   );
