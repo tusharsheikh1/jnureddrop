@@ -3,15 +3,45 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import useGoogleAuth from '../../hooks/useGoogleAuth';
 
-/* ── Shared icons ── */
-const EyeIcon = ({ visible }) => visible ? (
+/* ── SVGs & Icons ── */
+const LogoSVG = ({ className }) => (
+  <svg viewBox="0 0 100 120" className={className} fill="none">
+    <path
+      d="M50 0C50 0 5 45 5 75C5 99.8528 25.1472 120 50 120C74.8528 120 95 99.8528 95 75C95 45 50 0 50 0Z"
+      fill="#BA1C2E"
+    />
+    <path
+      d="M50 95C50 95 28 78 28 62C28 53 35 46 43 46C46.5 46 48.5 48 50 50C51.5 48 53.5 46 57 46C65 46 72 53 72 62C72 78 50 95 50 95Z"
+      fill="white"
+    />
+    <path
+      d="M22 68 C15 50 25 35 32 28"
+      stroke="white"
+      strokeWidth="6"
+      strokeLinecap="round"
+    />
+    <circle cx="42" cy="22" r="5" fill="white" />
+  </svg>
+);
+
+const MailIcon = () => (
   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+  </svg>
+);
+
+const LockIcon = () => (
+  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+  </svg>
+);
+
+    <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
   </svg>
 ) : (
   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
   </svg>
 );
 
@@ -31,59 +61,46 @@ const Spinner = () => (
   </svg>
 );
 
-const Field = ({ label, icon, error, children }) => (
-  <div>
-    <label className="block text-xs font-bold text-gray-500 uppercase tracking-widest mb-1.5">{label}</label>
+const BackIcon = () => (
+  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+  </svg>
+);
+
+/* ── UI Components ── */
+const Field = ({ icon, error, children }) => (
+  <div className="w-full">
     <div className="relative">
-      <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-400">{icon}</span>
+      <span className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-gray-500">{icon}</span>
       {children}
     </div>
-    {error && <p className="text-red-500 text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{error}</p>}
+    {error && <p className="text-red-500 text-xs mt-1.5 ml-2 flex items-center gap-1"><span>⚠</span>{error}</p>}
   </div>
 );
 
 const inputCls = (hasError) =>
-  `w-full bg-gray-50 border rounded-2xl pl-11 pr-4 py-3.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent focus:bg-white transition-all ${hasError ? 'border-red-400 bg-red-50' : 'border-gray-200'}`;
+  `w-full bg-transparent border rounded-[20px] pl-12 pr-4 py-3.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#BA1C2E] focus:border-transparent transition-all ${hasError ? 'border-red-400' : 'border-gray-300'}`;
 
-/* ── Email SVG icon ── */
-const MailIcon = () => (
-  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-  </svg>
-);
-const LockIcon = () => (
-  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-  </svg>
+/* ── Abstract Shapes ── */
+const TopRightShape = () => (
+  <div className="absolute top-0 right-0 w-64 h-64 overflow-hidden pointer-events-none">
+    <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full bg-[#F5E6E8] mix-blend-multiply" />
+  </div>
 );
 
-/* ── Header illustration ── */
-const HeaderArt = () => (
-  <svg viewBox="0 0 360 180" fill="none" className="w-full" style={{ maxHeight: 180 }}>
-    {/* Soft radial glow */}
-    <ellipse cx="180" cy="95" rx="140" ry="80" fill="rgba(255,255,255,0.06)" />
-    {/* Pulse line */}
-    <polyline points="20,110 55,110 70,75 85,130 100,90 115,110 145,110 290,110"
-      stroke="rgba(255,255,255,0.25)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-    {/* Central heart */}
-    <path d="M180 148 C180 148 130 118 130 88 C130 70 144 60 158 60 C166 60 175 65 180 73 C185 65 194 60 202 60 C216 60 230 70 230 88 C230 118 180 148 180 148Z"
-      fill="white" opacity="0.92" />
-    {/* Drop */}
-    <ellipse cx="180" cy="32" rx="11" ry="15" fill="white" opacity="0.85" />
-    <path d="M169 36 Q180 50 191 36" fill="white" opacity="0.85" />
-    <ellipse cx="176" cy="28" rx="3" ry="4" fill="white" opacity="0.45" />
-    {/* Sparkles left */}
-    <circle cx="75" cy="65" r="4" fill="rgba(255,255,255,0.35)" />
-    <circle cx="90" cy="50" r="2.5" fill="rgba(255,255,255,0.25)" />
-    <circle cx="60" cy="52" r="2" fill="rgba(255,255,255,0.2)" />
-    {/* Sparkles right */}
-    <circle cx="285" cy="65" r="4" fill="rgba(255,255,255,0.35)" />
-    <circle cx="300" cy="50" r="2.5" fill="rgba(255,255,255,0.25)" />
-    <circle cx="270" cy="52" r="2" fill="rgba(255,255,255,0.2)" />
-  </svg>
+const BottomGraphic = () => (
+  <div className="absolute bottom-0 left-0 right-0 h-48 overflow-hidden pointer-events-none z-0">
+    <div className="absolute -bottom-24 -left-12 w-64 h-64 rounded-full bg-[#F5E6E8] mix-blend-multiply" />
+    <svg viewBox="0 0 400 150" className="absolute bottom-0 left-0 w-full h-full" preserveAspectRatio="none">
+      <path d="M0,130 Q150,150 250,80 T350,80" fill="none" stroke="#BA1C2E" strokeWidth="2" strokeLinecap="round" />
+      <path d="M290,95 L295,85 L300,105 L305,80 L310,95" fill="none" stroke="#BA1C2E" strokeWidth="2" strokeLinejoin="round" />
+    </svg>
+    <div className="absolute bottom-4 right-8 transform translate-x-4">
+      <LogoSVG className="w-24 h-24 opacity-90" />
+    </div>
+  </div>
 );
 
-/* ════════════════════════════════════════════════════════════ */
 
 export default function DonorLoginPage() {
   const { donorLogin, donorRegister, donorGoogleLogin } = useAuth();
@@ -179,208 +196,219 @@ export default function DonorLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #C41E2A 0%, #7B0D1E 100%)' }}>
+    <div className="min-h-screen bg-gray-50 flex flex-col sm:justify-center sm:items-center sm:py-12 relative font-sans">
+      <div className="w-full flex-1 flex flex-col sm:flex-initial sm:max-w-md sm:rounded-3xl sm:shadow-2xl sm:overflow-hidden relative bg-white overflow-y-auto">
 
-      {/* ── Top: brand + illustration ── */}
-      <div className="flex flex-col items-center pt-10 px-6 pb-0">
-        {/* Logo row */}
-        <div className="flex items-center gap-2.5 mb-6">
-          <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center shadow">
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="white">
-              <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/>
-            </svg>
-          </div>
-          <div>
-            <div className="text-white font-extrabold text-lg leading-none tracking-tight">JnU<span className="opacity-80">RedDrop</span></div>
-            <div className="text-white/55 text-xs mt-0.5">Donate Blood · Save Lives</div>
-          </div>
-        </div>
-
-        <HeaderArt />
-      </div>
-
-      {/* ── Bottom sheet ── */}
-      <div
-        className="flex-1 bg-white rounded-t-[2rem] shadow-2xl px-6 pt-6 pb-10"
-        style={{ marginTop: -24 }}
-      >
-        {/* Tab switcher */}
-        <div className="flex bg-gray-100 rounded-2xl p-1 mb-6">
-          {['login', 'signup'].map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-200"
-              style={tab === t
-                ? { background: 'linear-gradient(135deg, #C41E2A, #9B1B2A)', color: 'white', boxShadow: '0 2px 8px rgba(196,30,42,0.35)' }
-                : { color: '#6B7280' }
-              }
-            >
-              {t === 'login' ? 'Log In' : 'Sign Up'}
-            </button>
-          ))}
-        </div>
-
-        {/* Google button — shared */}
-        <button
-          type="button"
-          onClick={() => handleGoogleLogin()}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-3 border border-gray-200 rounded-2xl py-3.5 text-sm font-bold text-gray-700 bg-white hover:bg-gray-50 active:bg-gray-100 transition-all mb-4 disabled:opacity-60"
-          style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.07)' }}
-        >
-          <GoogleIcon />
-          Continue with Google
-        </button>
-
-        {/* OR divider */}
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-xs text-gray-400 font-semibold tracking-widest uppercase">or</span>
-          <div className="flex-1 h-px bg-gray-200" />
-        </div>
-
-        {/* ── LOGIN FORM ── */}
+        {/* LOGIN VIEW */}
         {tab === 'login' && (
-          <form onSubmit={handleLogin} className="space-y-4">
-            <Field label="Email" icon={<MailIcon />} error={loginErrors.email?.[0]}>
-              <input
-                type="email"
-                className={inputCls(!!loginErrors.email)}
-                placeholder="you@example.com"
-                value={loginForm.email}
-                onChange={e => setLoginForm(f => ({ ...f, email: e.target.value }))}
-                required autoFocus
-              />
-            </Field>
+          <div className="flex-1 flex flex-col relative pb-8">
+            <TopRightShape />
 
-            <Field label="Password" icon={<LockIcon />} error={loginErrors.password?.[0]}>
-              <input
-                type={showLoginPw ? 'text' : 'password'}
-                className={`${inputCls(!!loginErrors.password)} pr-12`}
-                placeholder="Your password"
-                value={loginForm.password}
-                onChange={e => setLoginForm(f => ({ ...f, password: e.target.value }))}
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowLoginPw(v => !v)}
-                className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-600"
-              >
-                <EyeIcon visible={showLoginPw} />
-              </button>
-            </Field>
+            {/* Header */}
+            <div className="flex flex-col items-center pt-16 px-6 z-10">
+              <LogoSVG className="w-24 h-24 mb-2" />
+              <div className="text-[28px] font-bold tracking-tight mb-1">
+                <span className="text-[#1E293B]">Jnu</span><span className="text-[#BA1C2E]">reddrop</span>
+              </div>
+              <p className="text-gray-500 text-sm font-medium mb-6">Find Blood • Save Lives</p>
 
-            <div className="text-right -mt-1">
-              <Link to="/donor/forgot-password" className="text-xs font-semibold text-red-600 hover:text-red-700">
-                Forgot password?
-              </Link>
+              <p className="text-gray-500 text-sm text-center px-4 leading-relaxed mb-8">
+                A simple platform to find blood donors and help those in need at Jagannath University and beyond.
+              </p>
             </div>
 
-            {emailUnverified && (
-              <div className="rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3">
-                <p className="text-sm font-bold text-amber-800 mb-1">Email not verified</p>
-                <p className="text-xs text-amber-700 mb-2">Check your inbox for the verification link.</p>
-                <button type="button" onClick={() => navigate('/donor/verify-email')}
-                  className="text-xs font-bold text-red-700 hover:underline">
-                  Resend verification →
+            {/* Form */}
+            <div className="px-6 z-10 flex-1 relative">
+              <form onSubmit={handleLogin} className="space-y-4 relative z-10">
+                <Field icon={<MailIcon />} error={loginErrors.email?.[0]}>
+                  <input
+                    type="text"
+                    className={inputCls(!!loginErrors.email)}
+                    placeholder="Email or Phone Number"
+                    value={loginForm.email}
+                    onChange={e => setLoginForm(f => ({ ...f, email: e.target.value }))}
+                    required
+                  />
+                </Field>
+
+                <Field icon={<LockIcon />} error={loginErrors.password?.[0]}>
+                  <input
+                    type={showLoginPw ? 'text' : 'password'}
+                    className={`${inputCls(!!loginErrors.password)} pr-12`}
+                    placeholder="Password"
+                    value={loginForm.password}
+                    onChange={e => setLoginForm(f => ({ ...f, password: e.target.value }))}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPw(v => !v)}
+                    className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-600"
+                  >
+                    <EyeIcon visible={showLoginPw} />
+                  </button>
+                </Field>
+
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={loginLoading}
+                    className="w-full py-3.5 rounded-xl text-white font-semibold text-base flex items-center justify-center gap-2 active:scale-[0.98] transition-transform disabled:opacity-60"
+                    style={{ backgroundColor: '#BA1C2E' }}
+                  >
+                    {loginLoading ? <><Spinner /> Logging in…</> : 'Log In →'}
+                  </button>
+                </div>
+
+                <div className="text-center pt-2">
+                  <Link to="/donor/forgot-password" className="text-sm font-medium" style={{ color: '#BA1C2E' }}>
+                    Forget Password?
+                  </Link>
+                </div>
+
+                <div className="flex items-center gap-3 py-2">
+                  <div className="flex-1 h-px bg-gray-200" />
+                  <span className="text-xs text-gray-400">or</span>
+                  <div className="flex-1 h-px bg-gray-200" />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleGoogleLogin()}
+                  disabled={loading}
+                  className="w-full flex items-center justify-center gap-3 border rounded-[20px] py-3.5 text-sm font-semibold bg-white/80 backdrop-blur-sm hover:bg-gray-50 active:bg-gray-100 transition-all disabled:opacity-60"
+                  style={{ borderColor: '#BA1C2E', color: '#1E293B' }}
+                >
+                  <GoogleIcon />
+                  Continue with Google
                 </button>
-              </div>
-            )}
 
-            <button
-              type="submit"
-              disabled={loginLoading}
-              className="w-full py-4 rounded-2xl text-white font-extrabold text-base flex items-center justify-center gap-2 active:scale-[0.98] transition-transform disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg, #C41E2A, #9B1B2A)', boxShadow: '0 4px 20px rgba(196,30,42,0.4)' }}
-            >
-              {loginLoading ? <><Spinner /> Logging in…</> : '🩸 Log In'}
-            </button>
+                <div className="pt-5 pb-2">
+                  <button
+                    type="button"
+                    onClick={() => setTab('signup')}
+                    className="w-full py-3.5 rounded-[20px] font-semibold text-sm flex items-center justify-center transition-transform active:scale-[0.98] shadow-sm"
+                    style={{ backgroundColor: '#1E293B', color: 'white' }}
+                  >
+                    Create New Account
+                  </button>
+                </div>
+              </form>
+            </div>
 
-            <p className="text-center text-xs text-gray-400 pt-1">
-              No account?{' '}
-              <button type="button" onClick={() => setTab('signup')} className="text-red-600 font-bold">
-                Sign up free
-              </button>
-            </p>
-          </form>
+            {/* Bottom Background Building */}
+            <div className="absolute bottom-0 left-0 w-full h-64 pointer-events-none z-0" style={{
+              backgroundImage: 'url(/hero_university_building_bg_for_mobile.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              maskImage: 'linear-gradient(to bottom, transparent, black 80%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 80%)',
+              opacity: 0.6
+            }} />
+          </div>
         )}
 
-        {/* ── REGISTER FORM ── */}
+        {/* SIGNUP VIEW */}
         {tab === 'signup' && (
-          <form onSubmit={handleRegister} className="space-y-4">
-            <Field label="Email" icon={<MailIcon />} error={regErrors.email?.[0]}>
-              <input
-                type="email"
-                className={inputCls(!!regErrors.email)}
-                placeholder="you@example.com"
-                value={regForm.email}
-                onChange={e => setRegForm(f => ({ ...f, email: e.target.value }))}
-                required autoFocus
-              />
-            </Field>
+          <div className="flex-1 flex flex-col relative pb-8">
+            <BottomGraphic />
 
-            <Field label="Password" icon={<LockIcon />} error={regErrors.password?.[0]}>
-              <input
-                type={showRegPw ? 'text' : 'password'}
-                className={`${inputCls(!!regErrors.password)} pr-12`}
-                placeholder="Min. 6 characters"
-                value={regForm.password}
-                onChange={e => setRegForm(f => ({ ...f, password: e.target.value }))}
-                required minLength={6}
-              />
-              <button type="button" onClick={() => setShowRegPw(v => !v)}
-                className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-600">
-                <EyeIcon visible={showRegPw} />
+            {/* Header */}
+            <div className="pt-6 px-4 z-10 relative">
+              <button onClick={() => setTab('login')} className="p-2 text-black active:opacity-70">
+                <BackIcon />
               </button>
-            </Field>
+            </div>
 
-            <Field label="Confirm Password" icon={<LockIcon />} error={regErrors.password_confirmation?.[0]}>
-              <input
-                type={showRegConfirm ? 'text' : 'password'}
-                className={`${inputCls(!!regErrors.password_confirmation)} pr-12`}
-                placeholder="Repeat password"
-                value={regForm.password_confirmation}
-                onChange={e => setRegForm(f => ({ ...f, password_confirmation: e.target.value }))}
-                required
-              />
-              <button type="button" onClick={() => setShowRegConfirm(v => !v)}
-                className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-600">
-                <EyeIcon visible={showRegConfirm} />
-              </button>
-            </Field>
+            <div className="flex flex-col items-start pt-2 px-6 z-10 relative">
+              <div className="flex items-center gap-3 mb-2">
+                <LogoSVG className="w-12 h-12" />
+                <div>
+                  <div className="text-2xl font-bold tracking-tight">
+                    <span className="text-[#1E293B]">Jnu</span><span className="text-[#BA1C2E]">reddrop</span>
+                  </div>
+                  <p className="text-gray-500 text-xs font-medium mt-0.5">Find Blood • Save Lives</p>
+                </div>
+              </div>
+            </div>
 
-            <button
-              type="submit"
-              disabled={regLoading}
-              className="w-full py-4 rounded-2xl text-white font-extrabold text-base flex items-center justify-center gap-2 active:scale-[0.98] transition-transform disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg, #C41E2A, #9B1B2A)', boxShadow: '0 4px 20px rgba(196,30,42,0.4)' }}
-            >
-              {regLoading ? <><Spinner /> Creating account…</> : '🩸 Create Account'}
-            </button>
+            <div className="px-6 mt-6 mb-6 z-10 relative">
+              <h2 className="text-2xl font-bold text-[#1E293B] mb-2 tracking-tight">Create Your Account</h2>
+              <p className="text-gray-500 text-sm leading-relaxed pr-8">
+                Join our community and be a part of saving lives.
+              </p>
+            </div>
 
-            <p className="text-center text-xs text-gray-400 pt-1">
-              Already have an account?{' '}
-              <button type="button" onClick={() => setTab('login')} className="text-red-600 font-bold">
-                Log in
-              </button>
-            </p>
+            {/* Form */}
+            <div className="px-6 z-10 flex-1 relative pb-24">
+              <form onSubmit={handleRegister} className="space-y-3.5">
+                <Field icon={<MailIcon />} error={regErrors.email?.[0]}>
+                  <input
+                    type="email"
+                    className={inputCls(!!regErrors.email)}
+                    placeholder="Email Address"
+                    value={regForm.email}
+                    onChange={e => setRegForm(f => ({ ...f, email: e.target.value }))}
+                    required
+                  />
+                </Field>
 
-            <p className="text-center text-xs text-gray-400 leading-relaxed">
-              By signing up you agree to our{' '}
-              <Link to="/privacy-policy" className="text-gray-500 underline">Privacy Policy</Link>
-            </p>
-          </form>
+                <Field icon={<LockIcon />} error={regErrors.password?.[0]}>
+                  <input
+                    type={showRegPw ? 'text' : 'password'}
+                    className={`${inputCls(!!regErrors.password)} pr-12`}
+                    placeholder="Password"
+                    value={regForm.password}
+                    onChange={e => setRegForm(f => ({ ...f, password: e.target.value }))}
+                    required minLength={6}
+                  />
+                  <button type="button" onClick={() => setShowRegPw(v => !v)}
+                    className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-600">
+                    <EyeIcon visible={showRegPw} />
+                  </button>
+                </Field>
+
+                <Field icon={<LockIcon />} error={regErrors.password_confirmation?.[0]}>
+                  <input
+                    type={showRegConfirm ? 'text' : 'password'}
+                    className={`${inputCls(!!regErrors.password_confirmation)} pr-12`}
+                    placeholder="Confirm Password"
+                    value={regForm.password_confirmation}
+                    onChange={e => setRegForm(f => ({ ...f, password_confirmation: e.target.value }))}
+                    required
+                  />
+                  <button type="button" onClick={() => setShowRegConfirm(v => !v)}
+                    className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-600">
+                    <EyeIcon visible={showRegConfirm} />
+                  </button>
+                </Field>
+
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={regLoading}
+                    className="w-full py-3.5 rounded-xl text-white font-semibold text-base flex items-center justify-center gap-2 active:scale-[0.98] transition-transform disabled:opacity-60"
+                    style={{ backgroundColor: '#BA1C2E' }}
+                  >
+                    {regLoading ? <><Spinner /> Creating account…</> : 'Sign Up →'}
+                  </button>
+                </div>
+
+                <div className="relative z-20 pt-4 pb-8">
+                  <button
+                    type="button"
+                    onClick={() => setTab('login')}
+                    className="w-full py-3.5 rounded-[20px] font-semibold text-sm flex items-center justify-center transition-transform active:scale-[0.98] shadow-sm"
+                    style={{ backgroundColor: '#1E293B', color: 'white' }}
+                  >
+                    Already have an account? Log In
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         )}
 
-        {/* Trust badge */}
-        <div className="flex items-center justify-center gap-2 mt-6 pt-4 border-t border-gray-100">
-          <svg className="h-4 w-4 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
-          <span className="text-xs text-gray-400">Verified JnU community · Data secure</span>
-        </div>
       </div>
     </div>
   );
