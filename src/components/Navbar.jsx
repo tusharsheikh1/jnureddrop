@@ -62,7 +62,7 @@ export default function Navbar() {
           <div className="flex h-16 items-center justify-between gap-6">
 
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+            <Link to={isLoggedIn ? (isDonor ? "/donor/dashboard" : "/admin/dashboard") : "/"} className="flex items-center gap-2 flex-shrink-0">
               <LogoMark className="h-8 w-8" />
               <div className="flex flex-col justify-center">
                 <div className="text-xl font-bold tracking-tight leading-none mb-0.5">
@@ -245,7 +245,7 @@ export default function Navbar() {
       >
         {/* Drawer header */}
         <div className="flex items-center justify-between px-5 h-16 border-b border-gray-100 flex-shrink-0">
-          <Link to="/" onClick={close} className="flex items-center gap-2">
+          <Link to={isLoggedIn ? (isDonor ? "/donor/dashboard" : "/admin/dashboard") : "/"} onClick={close} className="flex items-center gap-2">
             <LogoMark className="h-6 w-6" />
             <div className="flex flex-col justify-center">
               <div className="text-base font-bold tracking-tight leading-none mb-[1px]">

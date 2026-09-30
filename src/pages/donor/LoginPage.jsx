@@ -212,11 +212,7 @@ export default function DonorLoginPage() {
               <div className="text-[28px] font-bold tracking-tight mb-1">
                 <span className="text-[#1E293B]">Jnu</span><span className="text-[#BA1C2E]">reddrop</span>
               </div>
-              <p className="text-gray-500 text-sm font-medium mb-6">Find Blood • Save Lives</p>
-
-              <p className="text-gray-500 text-sm text-center px-4 leading-relaxed mb-8">
-                A simple platform to find blood donors and help those in need at Jagannath University and beyond.
-              </p>
+              <p className="text-gray-500 text-sm font-medium mb-12">Find Blood • Save Lives</p>
             </div>
 
             {/* Form */}

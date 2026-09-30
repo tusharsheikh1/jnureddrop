@@ -103,7 +103,10 @@ function Layout({ children }) {
   );
 }
 
-function HomeRoute() {
+const isNative = Capacitor.isNativePlatform();
+const onboardingDone = () => { try { return !!localStorage.getItem('onboarding_done'); } catch { return false; } };
+
+function IndexRoute() {
   const { isLoggedIn, isDonor, isAdmin } = useAuth();
 
   if (isLoggedIn) {
@@ -111,11 +114,12 @@ function HomeRoute() {
     if (isDonor) return <Navigate to="/donor/dashboard" replace />;
   }
 
+  if (isNative && !onboardingDone()) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
   return <Layout><HomePage /></Layout>;
 }
-
-const isNative = Capacitor.isNativePlatform();
-const onboardingDone = () => { try { return !!localStorage.getItem('onboarding_done'); } catch { return false; } };
 
 export default function App() {
   return (
@@ -126,14 +130,10 @@ export default function App() {
         <GlobalGuard>
         <Routes>
           {/* Onboarding — native only, shown once */}
-          <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route path="/onboarding" element={<GuestRoute><OnboardingPage /></GuestRoute>} />
 
           {/* Public */}
-          <Route path="/" element={
-            isNative && !onboardingDone()
-              ? <Navigate to="/onboarding" replace />
-              : <HomeRoute />
-          } />
+          <Route path="/" element={<IndexRoute />} />
           <Route path="/find" element={<Layout><FindDonorsPage /></Layout>} />
           <Route path="/requests" element={<Layout><RequestsPage /></Layout>} />
           <Route path="/blog" element={<Layout><BlogPage /></Layout>} />
