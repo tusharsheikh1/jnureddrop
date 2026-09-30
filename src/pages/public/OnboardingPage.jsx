@@ -282,7 +282,7 @@ export default function OnboardingPage() {
       }}
     >
       {/* ── Top bar: logo + skip ── */}
-      <div style={{ display: 'flex', alignItems: 'center', justify-content: 'space-between', padding: '48px 24px 0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '48px 24px 0' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="white">
