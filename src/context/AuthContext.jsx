@@ -81,7 +81,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, type, loading, donorLogin, donorGoogleLogin, donorRegister, adminLogin, logout, refreshUser, resendVerification, isAdmin: type === 'admin', isDonor: type === 'donor', isLoggedIn: !!user }}>
+    <AuthContext.Provider value={{ user, type, loading, donorLogin, donorGoogleLogin, donorRegister, adminLogin, logout, refreshUser, resendVerification, isAdmin: type === 'admin', isDonor: type === 'donor', isLoggedIn: !!user, isVerified: !!(user && user.email_verified_at), isProfileComplete: !!(user && user.name && user.blood_type && user.district && user.phone && user.age && user.gender && user.weight_kg) }}>
       {children}
     </AuthContext.Provider>
   );

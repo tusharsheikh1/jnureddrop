@@ -316,8 +316,8 @@ function HighlightText({ text, query }) {
    Donor Card  — matches reference exactly
 ───────────────────────────────────────── */
 function DonorCard({ donor }) {
-  const { isLoggedIn, user } = useAuth();
-  const isProfileComplete = isLoggedIn && user && user.name && user.blood_type && user.district && user.phone;
+  const { isLoggedIn, isVerified, isProfileComplete: isComplete } = useAuth();
+  const isProfileComplete = isLoggedIn && isVerified && isComplete;
   const eligible = canDonate(donor.last_donation_date);
   const ago = timeAgo(donor.last_donation_date);
   const location = [donor.upazila, donor.district].filter(Boolean).join(', ');

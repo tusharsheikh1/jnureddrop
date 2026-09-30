@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "android": "vite build && node scripts/strip-apk-from-dist.cjs && cap sync android && cd android && .\\gradlew.bat assembleDebug"
+    "android": "vite build && node scripts/strip-apk-from-dist.cjs && cap sync android && cd android && .\\gradlew.bat assembleDebug && cp app/build/outputs/apk/debug/app-debug.apk ../public/ReddropJNU.apk"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.1",

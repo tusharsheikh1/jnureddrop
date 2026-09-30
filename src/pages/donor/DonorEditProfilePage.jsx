@@ -159,7 +159,12 @@ export default function DonorEditProfilePage() {
           height_inches = 0;
         }
       }
-      setForm({ ...donor, height_feet, height_inches });
+      setForm({
+        ...donor,
+        height_feet,
+        height_inches,
+        is_available: isNewUser ? true : (donor.is_available ?? true)
+      });
       setDistricts(districtsRes.data ?? []);
 
       if (donor.district) {

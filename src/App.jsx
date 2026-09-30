@@ -27,6 +27,8 @@ import PrivacyPolicyPage from './pages/public/PrivacyPolicyPage';
 import DonorLoginPage from './pages/donor/LoginPage';
 import DonorRegisterPage from './pages/donor/RegisterPage';
 import DonorVerifyEmailPage from './pages/donor/VerifyEmailPage';
+import ForgotPasswordPage from './pages/donor/ForgotPasswordPage';
+import ResetPasswordPage from './pages/donor/ResetPasswordPage';
 import DonorDashboardPage from './pages/donor/DashboardPage';
 import DonorProfilePage from './pages/donor/ProfilePage';
 import DonorCreateRequestPage from './pages/donor/CreateRequestPage';
@@ -101,6 +103,17 @@ function Layout({ children }) {
   );
 }
 
+function HomeRoute() {
+  const { isLoggedIn, isDonor, isAdmin } = useAuth();
+
+  if (isLoggedIn) {
+    if (isAdmin) return <Navigate to="/admin/dashboard" replace />;
+    if (isDonor) return <Navigate to="/donor/dashboard" replace />;
+  }
+
+  return <Layout><HomePage /></Layout>;
+}
+
 const isNative = Capacitor.isNativePlatform();
 const onboardingDone = () => { try { return !!localStorage.getItem('onboarding_done'); } catch { return false; } };
 
@@ -119,7 +132,7 @@ export default function App() {
           <Route path="/" element={
             isNative && !onboardingDone()
               ? <Navigate to="/onboarding" replace />
-              : <Layout><HomePage /></Layout>
+              : <HomeRoute />
           } />
           <Route path="/find" element={<Layout><FindDonorsPage /></Layout>} />
           <Route path="/requests" element={<Layout><RequestsPage /></Layout>} />
@@ -137,6 +150,8 @@ export default function App() {
           <Route path="/donor/login" element={<GuestRoute><Layout><DonorLoginPage /></Layout></GuestRoute>} />
           <Route path="/donor/register" element={<GuestRoute><Layout><DonorRegisterPage /></Layout></GuestRoute>} />
           <Route path="/donor/verify-email" element={<DonorVerifyEmailPage />} />
+          <Route path="/donor/forgot-password" element={<GuestRoute><Layout><ForgotPasswordPage /></Layout></GuestRoute>} />
+          <Route path="/donor/reset-password" element={<GuestRoute><Layout><ResetPasswordPage /></Layout></GuestRoute>} />
 
           {/* Donor protected */}
           <Route path="/donor/dashboard" element={<DonorRoute><Layout><DonorDashboardPage /></Layout></DonorRoute>} />

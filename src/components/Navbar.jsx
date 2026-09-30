@@ -74,7 +74,11 @@ export default function Navbar() {
 
             {/* Desktop nav links */}
             <div className="hidden md:flex items-center gap-1 flex-1">
-              <NavLink to="/" className={navLinkCls} end>Home</NavLink>
+              {!isLoggedIn ? (
+                <NavLink to="/" className={navLinkCls} end>Home</NavLink>
+              ) : (
+                <NavLink to={isDonor ? "/donor/dashboard" : "/admin/dashboard"} className={navLinkCls} end>Dashboard</NavLink>
+              )}
               <NavLink to="/find" className={navLinkCls}>Find Donors</NavLink>
               <NavLink to="/requests" className={navLinkCls}>Requests</NavLink>
               <NavLink to="/blog" className={navLinkCls}>Blog</NavLink>
@@ -306,9 +310,11 @@ export default function Navbar() {
           <div className="px-3 mt-4">
             <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-3 mb-1.5">Explore</p>
             <div className="space-y-0.5">
-              <DrawerLink to="/" label="Home" onClick={close} end
-                icon="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              />
+              {!isLoggedIn && (
+                <DrawerLink to="/" label="Home" onClick={close} end
+                  icon="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                />
+              )}
               <DrawerLink to="/find" label="Find Donors" onClick={close}
                 icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"
               />

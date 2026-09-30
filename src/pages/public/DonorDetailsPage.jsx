@@ -316,7 +316,7 @@ function IconEmail()    { return <svg width="14" height="14" viewBox="0 0 24 24"
 export default function DonorDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, isLoggedIn } = useAuth();
+  const { user, isLoggedIn, isVerified, isProfileComplete: isComplete } = useAuth();
 
   const [donor, setDonor]       = useState(null);
   const [loading, setLoading]   = useState(true);
@@ -331,7 +331,7 @@ export default function DonorDetailsPage() {
   if (loading) return <Loader />;
   if (!donor)  return <div className="min-h-screen flex items-center justify-center text-gray-500 font-sans">Donor not found.</div>;
 
-  const isProfileComplete = isLoggedIn && user?.name && user?.blood_type && user?.district && user?.phone;
+  const isProfileComplete = isLoggedIn && isVerified && isComplete;
   const eligible          = canDonate(donor.last_donation_date) && donor.is_available;
   const nextDate          = nextEligibleDate(donor.last_donation_date);
   const location          = [donor.upazila, donor.district].filter(Boolean).join(', ');

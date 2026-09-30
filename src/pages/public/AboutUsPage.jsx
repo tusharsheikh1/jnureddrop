@@ -6,7 +6,7 @@ import SEO from '../../components/SEO';
 
 const TEAM = [
   { name: 'Tushar Sheikh', role: 'Founder & Developer · 15th Batch, Dept. of Marketing', initials: 'TS', photo: '/tushar_sheikh.png', email: 'tushar.mkt15@gmail.com', facebook: 'https://www.facebook.com/tusharmktjnu/' },
-  { name: 'Department of Marketing, JnU', role: 'Supported by',                                          initials: 'MK' },
+  { name: 'Department of Marketing, JnU & JNUCSU', role: 'Supported by',                                          initials: 'MK' },
 ];
 
 const VALUES = [
@@ -26,7 +26,7 @@ const VALUES = [
       </svg>
     ),
     title: 'Community First',
-    desc:  'Built by a JnU Marketing student, supported by the Department of Marketing — for the entire JnU community.',
+    desc:  'Built by a JnU Marketing student, supported by the Department of Marketing & JNUCSU — for the entire JnU community.',
   },
   {
     icon: (
@@ -74,7 +74,7 @@ export default function AboutUsPage() {
           </div>
           <div>
             <h1 className="text-4xl font-extrabold text-white">JnU RedDrop</h1>
-            <p className="text-red-100 text-base mt-1">A blood donation platform built by a JnU Marketing student, supported by the Department of Marketing.</p>
+            <p className="text-red-100 text-base mt-1">A blood donation platform built by a JnU Marketing student, supported by the Department of Marketing & JNUCSU.</p>
           </div>
         </div>
       </div>
@@ -93,7 +93,7 @@ export default function AboutUsPage() {
             </div>
             <h1 className="text-white font-extrabold text-2xl leading-tight">JnU RedDrop</h1>
             <p className="text-red-100 text-sm mt-2 leading-relaxed">
-              A blood donation platform connecting donors and recipients across Jagannath University and beyond — built by a Marketing student, supported by the Department of Marketing.
+              A blood donation platform connecting donors and recipients across Jagannath University and beyond — built by a Marketing student, supported by the Department of Marketing & JNUCSU.
             </p>
           </div>
         </div>
@@ -139,7 +139,7 @@ export default function AboutUsPage() {
                 <h2 className="font-bold text-gray-900 mb-3 text-lg">Our Impact</h2>
                 <div className="grid grid-cols-3 gap-3">
                   <StatCard value={stats.total_donors ?? 0}        label="Registered Donors"  color="text-red-600"   />
-                  <StatCard value={stats.fulfilled_requests ?? 0}  label="Lives Impacted"      color="text-green-600" />
+                  <StatCard value={stats.available_donors ?? 0}    label="Available Now"       color="text-green-600" />
                   <StatCard value={stats.active_requests ?? 0}     label="Active Requests"     color="text-blue-600"  />
                 </div>
               </div>
@@ -191,13 +191,13 @@ export default function AboutUsPage() {
             <div className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 space-y-3">
               <h2 className="font-bold text-gray-900 text-lg">Get In Touch</h2>
 
-              <a href="mailto:reddrop@jnu.ac.bd" className="flex items-center gap-3 text-sm text-gray-600 hover:text-red-600 transition-colors">
+              <a href="mailto:info@jnurreddrop.com" className="flex items-center gap-3 text-sm text-gray-600 hover:text-red-600 transition-colors">
                 <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
                   <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                 </div>
-                reddrop@jnu.ac.bd
+                info@jnurreddrop.com
               </a>
 
               <Link to="/contact" className="flex items-center gap-3 text-sm text-gray-600 hover:text-red-600 transition-colors">
@@ -230,7 +230,7 @@ export default function AboutUsPage() {
           </div>
         </div>
 
-        <p className="text-center text-xs text-gray-300 mt-8 pb-2">JnU RedDrop v1.0 · Built by Tushar Sheikh, Dept. of Marketing · 15th Batch</p>
+        <p className="text-center text-xs text-gray-300 mt-8 pb-2">JnU RedDrop v1.0 · Built by Tushar Sheikh, Dept. of Marketing · 15th Batch · Supported by JNUCSU</p>
       </div>
     </div>
   );
