@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { LogoMark } from './Logo';
 
 const navLinks = [
   { label: 'Home',        to: '/' },
@@ -28,17 +29,15 @@ export default function Footer() {
 
           {/* ── Brand ── */}
           <div className="col-span-1">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-red-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-red-900/40">
-                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2C10.5 4.5 4 11.5 4 15.5a8 8 0 0016 0C20 11.5 13.5 4.5 12 2z" />
-                </svg>
+            <Link to="/" className="flex items-center gap-2 mb-4 inline-flex">
+              <LogoMark className="h-8 w-8" />
+              <div className="flex flex-col justify-center">
+                <div className="text-xl font-bold tracking-tight leading-none mb-0.5">
+                  <span className="text-white">Jnu</span><span className="text-[#BA1C2E]">reddrop</span>
+                </div>
+                <p className="text-gray-400 text-[9px] uppercase tracking-[0.1em] font-medium leading-none">Find Blood &bull; Save Lives</p>
               </div>
-              <div>
-                <p className="text-white font-extrabold text-base leading-none">JnURedDrop</p>
-                <p className="text-red-400 text-[11px] mt-0.5">Donate Blood, Save Lives</p>
-              </div>
-            </div>
+            </Link>
 
             <p className="text-sm text-gray-400 leading-relaxed mb-5">
               Connecting verified donors with those in need across Jagannath University and the nearby community. Every drop counts.

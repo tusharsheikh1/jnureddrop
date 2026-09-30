@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
+import { LogoMark } from './Logo';
 
 export default function Navbar() {
   const { isLoggedIn, isDonor, isAdmin, logout, user } = useAuth();
@@ -62,10 +63,13 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-              <img src="/logo.png" alt="JnU RedDrop" className="h-8 w-auto" onError={e => { e.target.style.display = 'none'; }} />
-              <span className="text-red-600 font-extrabold text-lg tracking-tight">
-                Jn<span className="text-gray-900">U</span>RedDrop
-              </span>
+              <LogoMark className="h-8 w-8" />
+              <div className="flex flex-col justify-center">
+                <div className="text-xl font-bold tracking-tight leading-none mb-0.5">
+                  <span className="text-[#1E293B]">Jnu</span><span className="text-[#BA1C2E]">reddrop</span>
+                </div>
+                <p className="text-gray-500 text-[9px] uppercase tracking-[0.1em] font-medium leading-none">Find Blood &bull; Save Lives</p>
+              </div>
             </Link>
 
             {/* Desktop nav links */}
@@ -238,9 +242,13 @@ export default function Navbar() {
         {/* Drawer header */}
         <div className="flex items-center justify-between px-5 h-16 border-b border-gray-100 flex-shrink-0">
           <Link to="/" onClick={close} className="flex items-center gap-2">
-            <span className="text-red-600 font-extrabold text-lg tracking-tight">
-              Jn<span className="text-gray-900">U</span>RedDrop
-            </span>
+            <LogoMark className="h-6 w-6" />
+            <div className="flex flex-col justify-center">
+              <div className="text-base font-bold tracking-tight leading-none mb-[1px]">
+                <span className="text-[#1E293B]">Jnu</span><span className="text-[#BA1C2E]">reddrop</span>
+              </div>
+              <p className="text-gray-500 text-[8px] uppercase tracking-[0.1em] font-medium leading-none">Find Blood &bull; Save Lives</p>
+            </div>
           </Link>
           <button
             onClick={close}
