@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Capacitor } from '@capacitor/core';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 
 import Navbar from './components/Navbar';
+import TopNavbar from './components/TopNavbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import UpdateBanner from './components/UpdateBanner';
@@ -45,10 +46,15 @@ import AdminBlogPage from './pages/admin/BlogPage';
 import AdminStaffPage from './pages/admin/StaffPage';
 import AdminSettingsPage from './pages/admin/SettingsPage';
 
-function DonorRoute({ children }) {
-  const { isLoggedIn, isDonor } = useAuth();
+function DonorRoute({ children, requireComplete = true }) {
+  const { isLoggedIn, isDonor, isVerified, isProfileComplete } = useAuth();
   if (!isLoggedIn) return <Navigate to="/donor/login" replace />;
   if (!isDonor)    return <Navigate to="/" replace />;
+
+  if (requireComplete) {
+    if (!isProfileComplete) return <Navigate to="/donor/profile/edit" state={{ newUser: true, message: 'Please complete your profile to continue.' }} replace />;
+    if (!isVerified) return <Navigate to="/donor/verify-email" replace />;
+  }
   return children;
 }
 
@@ -69,9 +75,24 @@ function GuestRoute({ children, adminOnly = false }) {
   return children;
 }
 
+function GlobalGuard({ children }) {
+  const { isLoggedIn, isDonor, isProfileComplete } = useAuth();
+  const location = useLocation();
+
+  if (isLoggedIn && isDonor && !isProfileComplete) {
+    const allowed = ['/donor/profile/edit', '/donor/login', '/donor/register', '/donor/verify-email'];
+    if (!allowed.includes(location.pathname)) {
+      return <Navigate to="/donor/profile/edit" state={{ newUser: true, message: 'Please complete your profile to continue.' }} replace />;
+    }
+  }
+
+  return children;
+}
+
 function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col">
+      <TopNavbar />
       <UpdateBanner />
       <Navbar />
       <main className="flex-1 pb-16 md:pb-0">{children}</main>
@@ -89,6 +110,7 @@ export default function App() {
       <BrowserRouter>
         <ScrollToTop />
         <NotificationProvider>
+        <GlobalGuard>
         <Routes>
           {/* Onboarding — native only, shown once */}
           <Route path="/onboarding" element={<OnboardingPage />} />
@@ -119,10 +141,10 @@ export default function App() {
           {/* Donor protected */}
           <Route path="/donor/dashboard" element={<DonorRoute><Layout><DonorDashboardPage /></Layout></DonorRoute>} />
           <Route path="/donor/profile" element={<DonorRoute><Layout><DonorProfilePage /></Layout></DonorRoute>} />
-          <Route path="/donor/profile/edit" element={<DonorRoute><Layout><DonorEditProfilePage /></Layout></DonorRoute>} />
+          <Route path="/donor/profile/edit" element={<DonorRoute requireComplete={false}><Layout><DonorEditProfilePage /></Layout></DonorRoute>} />
           <Route path="/donor/history" element={<DonorRoute><Layout><DonationHistoryPage /></Layout></DonorRoute>} />
           <Route path="/notifications" element={<DonorRoute><Layout><NotificationsPage /></Layout></DonorRoute>} />
-          <Route path="/donor/getting-started" element={<DonorRoute><Layout><GettingStartedPage /></Layout></DonorRoute>} />
+          <Route path="/donor/getting-started" element={<DonorRoute requireComplete={false}><Layout><GettingStartedPage /></Layout></DonorRoute>} />
           <Route path="/donor/blood-request/create" element={<DonorRoute><Layout><DonorCreateRequestPage /></Layout></DonorRoute>} />
           <Route path="/donor/my-requests" element={<DonorRoute><Layout><DonorMyRequestsPage /></Layout></DonorRoute>} />
 
@@ -139,6 +161,7 @@ export default function App() {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </GlobalGuard>
         </NotificationProvider>
       </BrowserRouter>
     </AuthProvider>
